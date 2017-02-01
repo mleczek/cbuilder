@@ -1,4 +1,4 @@
-# Project Manager for C++
+# Package Manager for C++
 
 ## Contributing
 
