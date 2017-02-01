@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "name": "Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "description"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name using 'org-name/package-name' format."
+    },
+    "type": {
+      "enum": ["library", "project"],
+      "description": "Package type, either 'library' for common packages or 'project' for other purposes."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short package description."
+    }
+  }
+}
