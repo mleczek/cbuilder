@@ -7,6 +7,10 @@ if (!file_exists('cbuilder.json')) {
     //exit(-1);
 }
 
+// Script Execution Configuration
+set_time_limit(0); // disable timeout
+ini_set('memory_limit', '128M');
+
 // Composer Dependencies
 require __DIR__ . '/../vendor/autoload.php';
 
