@@ -5,7 +5,9 @@ namespace Mleczek\CBuilder\Commands;
 
 
 use Mleczek\CBuilder\Compilers\Drivers\GCC;
+use Mleczek\CBuilder\Compilers\Factory;
 use Mleczek\CBuilder\Compilers\Manager;
+use Mleczek\CBuilder\Compilers\Runner;
 use Mleczek\CBuilder\Configuration\Store;
 use Mleczek\CBuilder\Package;
 use Symfony\Component\Console\Command\Command;
@@ -21,9 +23,9 @@ class Build extends Command
     private $config;
 
     /**
-     * @var Package
+     * @var Factory
      */
-    private $package;
+    private $factory;
 
     /**
      * @var Manager
@@ -34,15 +36,15 @@ class Build extends Command
      * Build constructor.
      *
      * @param Store $config
-     * @param Package $package
+     * @param Factory $factory
      * @param Manager $compilers
      */
-    public function __construct(Store $config, Package $package, Manager $compilers)
+    public function __construct(Store $config, Factory $factory, Manager $compilers)
     {
         parent::__construct();
 
         $this->config = $config;
-        $this->package = $package;
+        $this->factory = $factory;
         $this->compilers = $compilers;
     }
 
@@ -90,49 +92,12 @@ class Build extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Register compilers
         $this->registerAllCompilers($output);
 
-        // TODO: Get compiler using package preferences (many compilers in many versions)
-        $compiler = $this->compilers->getOne();
+        $this->factory
+            ->makeRunner(Package::current())
+            ->run($output);
 
-        // TODO: Build all modules...
-
-        // TODO: Get all source files...
-        $sources = $this->package->getSourceFiles();
-
-        // TODO: Get package type (library/project)
-
-        // TODO: Link other modules
-
-        // TODO: Set defines
-
-        // TODO: Add include dir and all modules include dirs
-
-        // TODO: Build library static and/or dynamic (depend on package preferences) or executable
-        $arch = $this->package->getArchitectures();
-        foreach ($arch as $archName) {
-            $output->write("Building ($archName)... ");
-
-            // TODO: Create output directories...
-            // ...
-
-            $stdout = [];
-            $exitCode = $compiler->setArchitecture($archName)->compile($sources, $stdout);
-
-            if ($exitCode == 0) {
-                $output->writeln('<info>OK</info>');
-            } else {
-                $output->writeln('<fg=red>FAIL</>');
-                $output->writeln(array_merge(
-                    ['<error>======== COMPILER ERROR ========'],
-                    $stdout,
-                    ['================================</error>']
-                ));
-            }
-        }
-
-        $output->write('Building finished.');
         return 0; // means "ok"
     }
 

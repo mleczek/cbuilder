@@ -9,6 +9,7 @@ namespace Mleczek\CBuilder;
  */
 class Package
 {
+    const MODULES_DIRECTORY = 'cmodules';
     const PACKAGE_FILENAME = 'cbuilder.json';
 
     const INCLUDE_DIR_KEY = 'include';
@@ -28,16 +29,29 @@ class Package
     /**
      * Package constructor.
      *
-     * @param string $file
+     * @param null|string $module Module package name (null for root package).
      */
-    public function __construct($file = self::PACKAGE_FILENAME)
+    public function __construct($module = null)
     {
         // TODO: Check if file exists
         // TODO: Check json schema
 
-        $this->json = json_decode(file_get_contents($file));
+        $path = $module;
+
+        // Search module package in modules directory.
+        if (!is_null($module)) {
+            $path = self::MODULES_DIRECTORY . '/' . $module . '/';
+        }
+
+        $path .= self::PACKAGE_FILENAME;
+        $this->json = json_decode(file_get_contents($path));
     }
 
+    /**
+     * Get package type (library/project).
+     *
+     * @return string
+     */
     public function getPackageType()
     {
         if (!isset($this->json->{self::PACKAGE_TYPE_KEY})) {
@@ -87,7 +101,7 @@ class Package
 
         $entries = scandir($dir, SCANDIR_SORT_NONE);
         foreach ($entries as $entry) {
-            $path = $dir.'/'.$entry;
+            $path = $dir . '/' . $entry;
 
             // Omit non special entries
             // (current and parent dir).
@@ -97,13 +111,13 @@ class Package
 
             // Search subdirectories if entry is a dir
             // and $recursively is set to true.
-            if(is_dir($path) && $recursively) {
+            if (is_dir($path) && $recursively) {
                 $results += $this->listFiles($path);
             }
 
             // Add path to results if it's really a file (not symlink)
             // which name match given pattern (utf-8, case insensitive).
-            if(is_file($path) && preg_match($pattern, $entry)) {
+            if (is_file($path) && preg_match($pattern, $entry)) {
                 $results[] = $path;
             }
         }
@@ -136,5 +150,28 @@ class Package
         }
 
         return (array)$this->json->{self::ARCHITECTURE_KEY};
+    }
+
+    /**
+     * Get current package instance.
+     *
+     * @see module
+     * @return Package
+     */
+    public static function current()
+    {
+        return new Package();
+    }
+
+    /**
+     * Get module package instance.
+     *
+     * @see current
+     * @param $name Package name.
+     * @return Package
+     */
+    public static function module($name)
+    {
+        return new Package($name);
     }
 }
