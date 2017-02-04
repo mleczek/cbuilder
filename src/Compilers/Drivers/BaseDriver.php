@@ -16,6 +16,11 @@ abstract class BaseDriver implements Driver
     protected $arch;
 
     /**
+     * @var array
+     */
+    protected $defines = [];
+
+    /**
      * @return string
      */
     public function getArchitecture()
@@ -30,6 +35,29 @@ abstract class BaseDriver implements Driver
     public function setArchitecture($arch)
     {
         $this->arch = $arch;
+        return $this;
+    }
+
+    /**
+     * Get preprocessor macros.
+     *
+     * @return array
+     */
+    public function getDefines()
+    {
+        return $this->defines;
+    }
+
+    /**
+     * Register preprocessor macro.
+     *
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function setDefine($name, $value)
+    {
+        $this->defines[$name] = $value;
         return $this;
     }
 

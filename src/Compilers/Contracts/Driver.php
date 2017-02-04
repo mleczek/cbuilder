@@ -44,6 +44,22 @@ interface Driver
     public function setArchitecture($arch);
 
     /**
+     * Get preprocessor macros.
+     *
+     * @return array
+     */
+    public function getDefines();
+
+    /**
+     * Register preprocessor macro.
+     *
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function setDefine($name, $value);
+
+    /**
      * Execute the compiler and return exit code.
      *
      * @param array $sources List of source files.

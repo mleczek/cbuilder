@@ -62,17 +62,35 @@ class GCC extends BaseDriver
     }
 
     /**
-     * @return string
+     * @return array
      * @throws NotSupportedException
      */
     protected function getArchOption()
     {
         $arch = $this->getArchitecture();
         if(array_key_exists($arch, self::ARCHITECTURE_OPTIONS)) {
-            return self::ARCHITECTURE_OPTIONS[$arch];
+            return [self::ARCHITECTURE_OPTIONS[$arch]];
         }
 
         throw new NotSupportedException(/* FIXME: Architecture not supported message */);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefinesOptions()
+    {
+        $result = [];
+
+        // Register user-defined macros.
+        foreach($this->getDefines() as $name => $value) {
+            $escaped = str_replace('"', '\\"', $value);
+
+            $result[] = '-D';
+            $result[] = "$name=\"$escaped\""; // TODO: Deep test escaping characters
+        }
+
+        return $result;
     }
 
     /**
@@ -87,7 +105,8 @@ class GCC extends BaseDriver
         return $this->run(array_merge(
             $sources,
             ['-o', $this->getBuildPath()],
-            [$this->getArchOption()]
+            $this->getArchOption(),
+            $this->getDefinesOptions()
         ), $output);
     }
 }

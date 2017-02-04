@@ -20,6 +20,8 @@ class Package
     const PACKAGE_TYPE_DEFAULT = 'library';
     const ARCHITECTURE_KEY = 'arch';
     const ARCHITECTURE_DEFAULT = ['x86', 'x64'];
+    const DEFINES_KEY = 'define';
+    const DEFINES_DEFAULT = ['NDEBUG' => true];
 
     /**
      * @var array
@@ -150,6 +152,21 @@ class Package
         }
 
         return (array)$this->json->{self::ARCHITECTURE_KEY};
+    }
+
+    /**
+     * Get defines for specified mode.
+     *
+     * @param string $mode
+     * @return array
+     */
+    public function getDefines($mode = 'release')
+    {
+        if (!isset($this->json->{self::DEFINES_KEY}) || !isset($this->json->{self::DEFINES_KEY}->$mode)) {
+            return self::DEFINES_DEFAULT;
+        }
+
+        return (array)$this->json->{self::DEFINES_KEY}->$mode;
     }
 
     /**

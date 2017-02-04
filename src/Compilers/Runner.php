@@ -49,13 +49,20 @@ class Runner
         // TODO: Link other modules
 
         // TODO: Set defines
+        $defines = $this->package->getDefines();
+        foreach ($defines as $name => $value) {
+            $compiler->setDefine($name, $value);
+        }
 
         // TODO: Add include dir and all modules include dirs
 
         // TODO: Build library static and/or dynamic (depend on package preferences) or executable
         $arch = $this->package->getArchitectures();
+        $total = count($arch);
+        $done = 0;
+
         foreach ($arch as $archName) {
-            $output->write("Building ($archName)... ");
+            $output->write("Build ($archName)... ");
 
             // TODO: Create output directories...
             // ...
@@ -64,6 +71,7 @@ class Runner
             $exitCode = $compiler->setArchitecture($archName)->compile($sources, $stdout);
 
             if ($exitCode == 0) {
+                ++$done;
                 $output->writeln('<info>OK</info>');
             } else {
                 $output->writeln('<fg=red>FAIL</>');
@@ -75,6 +83,13 @@ class Runner
             }
         }
 
-        $output->write('Building finished.');
+        // Build stats
+        if ($done == $total) {
+            $output->write("Build... <info>$done/$total</info>");
+        } else if ($done > 0) {
+            $output->write("Build... <comment>$done/$total</comment>");
+        } else {
+            $output->write("Build... <fg=red>$done/$total</>");
+        }
     }
 }
