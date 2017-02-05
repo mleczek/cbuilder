@@ -60,6 +60,16 @@ interface Driver
     public function setDefine($name, $value);
 
     /**
+     * @return $this
+     */
+    public function includeDebugSymbols();
+
+    /**
+     * @return $this
+     */
+    public function includeTempFiles();
+
+    /**
      * Execute the compiler and return exit code.
      *
      * @param array $sources List of source files.

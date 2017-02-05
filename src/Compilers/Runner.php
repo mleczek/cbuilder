@@ -16,11 +16,15 @@ class Runner
      * @var Package
      */
     private $package;
-
     /**
      * @var Manager
      */
     private $compilers;
+
+    /**
+     * @var bool
+     */
+    private $debugMode;
 
     /**
      * Runner constructor.
@@ -34,10 +38,26 @@ class Runner
         $this->compilers = $compilers;
     }
 
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setDebugMode($enabled)
+    {
+        $this->debugMode = $enabled;
+        return $this;
+    }
+
     public function run(OutputInterface $output)
     {
         // TODO: Get compiler using package preferences (many compilers in many versions)
         $compiler = $this->compilers->getOne();
+
+        // Set debug mode
+        if($this->debugMode) {
+            $compiler->includeDebugSymbols()
+                ->includeTempFiles();
+        }
 
         // TODO: Build all modules...
 
@@ -49,7 +69,8 @@ class Runner
         // TODO: Link other modules
 
         // TODO: Set defines
-        $defines = $this->package->getDefines();
+        $modeName = $this->debugMode ? 'debug' : 'release';
+        $defines = $this->package->getDefines($modeName);
         foreach ($defines as $name => $value) {
             $compiler->setDefine($name, $value);
         }
@@ -85,11 +106,11 @@ class Runner
 
         // Build stats
         if ($done == $total) {
-            $output->write("Build... <info>$done/$total</info>");
+            $output->write("Build stats... <info>$done/$total</info>");
         } else if ($done > 0) {
-            $output->write("Build... <comment>$done/$total</comment>");
+            $output->write("Build stats... <comment>$done/$total</comment>");
         } else {
-            $output->write("Build... <fg=red>$done/$total</>");
+            $output->write("Build stats... <fg=red>$done/$total</>");
         }
     }
 }

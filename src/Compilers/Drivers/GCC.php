@@ -94,6 +94,30 @@ class GCC extends BaseDriver
     }
 
     /**
+     * @return array
+     */
+    private function getDebugSymbolOption()
+    {
+        if(!$this->debugSymbolsFlag) {
+            return [];
+        }
+
+        return ['-g'];
+    }
+
+    /**
+     * @return array
+     */
+    private function getTempFilesOption()
+    {
+        if(!$this->tempFilesFlag) {
+            return [];
+        }
+
+        return ['-save-temps=obj'];
+    }
+
+    /**
      * Execute the compiler and return exit code.
      *
      * @param array $sources List of source files.
@@ -106,7 +130,9 @@ class GCC extends BaseDriver
             $sources,
             ['-o', $this->getBuildPath()],
             $this->getArchOption(),
-            $this->getDefinesOptions()
+            $this->getDefinesOptions(),
+            $this->getDebugSymbolOption(),
+            $this->getTempFilesOption()
         ), $output);
     }
 }

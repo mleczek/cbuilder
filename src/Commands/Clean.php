@@ -37,8 +37,8 @@ class Clean extends Command
     {
         $this->setName('clean')
             ->setDescription('Remove build command artifacts.')
-            ->setHelp('Remove all artifacts created during executing the build command.')
-            ->addOption('modules', 'm', InputOption::VALUE_NONE, 'Perform cleaning also for modules artifacts.');
+            ->setHelp('Remove all artifacts created during executing the build command.');
+            //->addOption('modules', 'm', InputOption::VALUE_NONE, 'Perform cleaning also for modules artifacts.'); TODO: Implement...
     }
 
     /**

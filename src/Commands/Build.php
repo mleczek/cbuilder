@@ -54,9 +54,9 @@ class Build extends Command
     protected function configure()
     {
         $this->setName('build')
-            ->setDescription('Build library/project artifacts.');
+            ->setDescription('Build library/project artifacts.')
         //->setHelp('...') TODO: Add help description
-        //->addOption('debug', 'd', InputOption::VALUE_NONE, 'Build using debug configuration.') // TODO: Implement
+        ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Use debug macros and include debug symbols as well as temp files.');
         //->addOption('compiler', 'c', InputOption::VALUE_REQUIRED, 'Strict use of a specific compiler.') // TODO: Implement
         //->addOption('arch', 'a', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Create artifacts only for a specific architecture(s).'); // TODO: Implement
     }
@@ -96,6 +96,7 @@ class Build extends Command
 
         $this->factory
             ->makeRunner(Package::current())
+            ->setDebugMode($input->getOption('debug'))
             ->run($output);
 
         return 0; // means "ok"

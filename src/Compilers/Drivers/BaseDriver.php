@@ -21,6 +21,16 @@ abstract class BaseDriver implements Driver
     protected $defines = [];
 
     /**
+     * @var bool
+     */
+    protected $debugSymbolsFlag = false;
+
+    /**
+     * @var bool
+     */
+    protected $tempFilesFlag = false;
+
+    /**
      * @return string
      */
     public function getArchitecture()
@@ -58,6 +68,24 @@ abstract class BaseDriver implements Driver
     public function setDefine($name, $value)
     {
         $this->defines[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function includeDebugSymbols()
+    {
+        $this->debugSymbolsFlag = true;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function includeTempFiles()
+    {
+        $this->tempFilesFlag = true;
         return $this;
     }
 
