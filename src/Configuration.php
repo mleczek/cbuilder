@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Mleczek\CBuilder\Configuration;
+namespace Mleczek\CBuilder;
 
 
-class Store
+class Configuration
 {
     /**
      * @var string

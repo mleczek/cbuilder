@@ -1,0 +1,62 @@
+{
+    "name": "org/package",
+    "version": "1.1.18",
+    "description": "...",
+    "keywords": [
+        "...",
+        "..."
+    ],
+    "homepage": "...",
+    "license": "MIT",
+    "type": "library",
+    "include": "include",
+    "source": "src",
+    "compiler": {
+        "gcc": "^5.0"
+    },
+    "platform": "windows",
+    "arch": [
+        "x86",
+        "x64"
+    ],
+    "linking": [
+        "static",
+        "dynamic"
+    ],
+    "conflict": {
+        "org/package": "<= 0.5.2",
+        "org2/package": ">= 0.2.3 and <= 0.5.2",
+        "org2/package2": "<=0.2.3 or >=0.5.2"
+    },
+    "suggest": {
+        "org/package2": "reason..."
+    },
+    "require": {
+        "org/package3": "dev-master static",
+        "org3/package": "~0.5.6"
+    },
+    "require-dev": {
+        "org/package4": "^1.3"
+    },
+    "define": {
+        "debug": {
+            "debug": true,
+            "_debug": true
+        },
+        "release": {
+            "ndebug": true
+        }
+    },
+    "scripts": {
+        "before-build": [
+            "...",
+            "..."
+        ],
+        "after-build:windows,x32": "...",
+        "custom": "..."
+    },
+    "repository": {
+        "type": "file",
+        "url": "path/to/repo"
+    }
+}

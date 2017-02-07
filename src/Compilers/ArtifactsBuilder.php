@@ -10,14 +10,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Handler compiling and linking process
  * for specified package (including modules).
  */
-class Runner
+class ArtifactsBuilder
 {
     /**
      * @var Package
      */
     private $package;
     /**
-     * @var Manager
+     * @var CompilersContainer
      */
     private $compilers;
 
@@ -30,9 +30,9 @@ class Runner
      * Runner constructor.
      *
      * @param Package $package
-     * @param Manager $compilers
+     * @param CompilersContainer $compilers
      */
-    public function __construct(Package $package, Manager $compilers)
+    public function __construct(Package $package, CompilersContainer $compilers)
     {
         $this->package = $package;
         $this->compilers = $compilers;
@@ -72,7 +72,7 @@ class Runner
         $modeName = $this->debugMode ? 'debug' : 'release';
         $defines = $this->package->getDefines($modeName);
         foreach ($defines as $name => $value) {
-            $compiler->setDefine($name, $value);
+            $compiler->setDefine(strtoupper($name), $value);
         }
 
         // TODO: Add include dir and all modules include dirs

@@ -3,7 +3,7 @@
 return [
 
     'drivers' => [
-        'gcc' => \Mleczek\CBuilder\Compilers\Drivers\GCC::class,
+        'gcc' => \Mleczek\CBuilder\Compilers\Providers\GCC::class,
     ],
 
 ];

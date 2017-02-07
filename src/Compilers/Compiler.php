@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Mleczek\CBuilder\Compilers\Contracts;
+namespace Mleczek\CBuilder\Compilers;
 
 
 /**
  * Represents the executable compiler
  * used for building and linking libraries.
  */
-interface Driver
+interface Compiler
 {
     /**
      * Check whether driver can be used correctly.

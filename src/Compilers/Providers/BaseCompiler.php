@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Mleczek\CBuilder\Compilers\Drivers;
+namespace Mleczek\CBuilder\Compilers\Providers;
 
 
-use Mleczek\CBuilder\Compilers\Contracts\Driver;
+use Mleczek\CBuilder\Compilers\Compiler;
 
-abstract class BaseDriver implements Driver
+abstract class BaseCompiler implements Compiler
 {
     const BUILD_DIR = "build";
 

@@ -1,0 +1,16 @@
+{
+  "name": "org/package",
+  "description": "...",
+  "type": "project",
+  "arch": [
+    "x86"
+  ],
+  "define": {
+    "debug": {
+      "message": "\"Debug mode\""
+    },
+    "release": {
+      "message": "\"Release mode\""
+    }
+  }
+}

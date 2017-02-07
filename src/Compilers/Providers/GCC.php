@@ -1,10 +1,11 @@
 <?php
 
 
-namespace Mleczek\CBuilder\Compilers\Drivers;
+namespace Mleczek\CBuilder\Compilers\Providers;
 
 
-use Mleczek\CBuilder\Compilers\Contracts\Driver;
+use Mleczek\CBuilder\Compilers\Providers\BaseCompiler;
+use Mleczek\CBuilder\Compilers\Compiler;
 use Mleczek\CBuilder\Compilers\Exceptions\NotSupportedException;
 
 /**
@@ -13,7 +14,7 @@ use Mleczek\CBuilder\Compilers\Exceptions\NotSupportedException;
  * @link https://gcc.gnu.org/ (Linux)
  * @link http://www.mingw.org/ (Windows)
  */
-class GCC extends BaseDriver
+class GCC extends BaseCompiler
 {
     /**
      * CLI options set by specified architectures.

@@ -16,10 +16,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // DI Container
 $builder = new DI\ContainerBuilder();
+$builder->useAnnotations(true);
 $container = $builder->build();
 
 // Console Configuration
-$config = $container->get(\Mleczek\CBuilder\Configuration\Store::class);
+$config = $container->get(\Mleczek\CBuilder\Configuration::class);
 $config->setDir(__DIR__ . '/../config');
 
 // Console Application

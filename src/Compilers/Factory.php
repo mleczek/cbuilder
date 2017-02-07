@@ -9,16 +9,16 @@ use Mleczek\CBuilder\Package;
 class Factory
 {
     /**
-     * @var Manager
+     * @var CompilersContainer
      */
     private $compilers;
 
     /**
      * Factory constructor.
      *
-     * @param Manager $compilers
+     * @param CompilersContainer $compilers
      */
-    public function __construct(Manager $compilers)
+    public function __construct(CompilersContainer $compilers)
     {
         $this->compilers = $compilers;
     }
@@ -27,10 +27,10 @@ class Factory
      * Get new instance of the runner.
      *
      * @param Package $package
-     * @return Runner
+     * @return ArtifactsBuilder
      */
     public function makeRunner(Package $package)
     {
-        return new Runner($package, $this->compilers);
+        return new ArtifactsBuilder($package, $this->compilers);
     }
 }

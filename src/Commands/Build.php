@@ -4,11 +4,11 @@
 namespace Mleczek\CBuilder\Commands;
 
 
-use Mleczek\CBuilder\Compilers\Drivers\GCC;
+use Mleczek\CBuilder\Compilers\Providers\GCC;
 use Mleczek\CBuilder\Compilers\Factory;
-use Mleczek\CBuilder\Compilers\Manager;
-use Mleczek\CBuilder\Compilers\Runner;
-use Mleczek\CBuilder\Configuration\Store;
+use Mleczek\CBuilder\Compilers\CompilersContainer;
+use Mleczek\CBuilder\Compilers\ArtifactsBuilder;
+use Mleczek\CBuilder\Configuration;
 use Mleczek\CBuilder\Package;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Build extends Command
 {
     /**
-     * @var Store
+     * @var \Mleczek\CBuilder\Configuration
      */
     private $config;
 
@@ -28,18 +28,18 @@ class Build extends Command
     private $factory;
 
     /**
-     * @var Manager
+     * @var CompilersContainer
      */
     protected $compilers;
 
     /**
      * Build constructor.
      *
-     * @param Store $config
+     * @param \Mleczek\CBuilder\Configuration $config
      * @param Factory $factory
-     * @param Manager $compilers
+     * @param CompilersContainer $compilers
      */
-    public function __construct(Store $config, Factory $factory, Manager $compilers)
+    public function __construct(Configuration $config, Factory $factory, CompilersContainer $compilers)
     {
         parent::__construct();
 

@@ -6,17 +6,17 @@ namespace Mleczek\CBuilder\Compilers;
 
 use Closure;
 use DI\Container;
-use Mleczek\CBuilder\Compilers\Contracts\Driver;
+use Mleczek\CBuilder\Compilers\Compiler;
 use Mleczek\CBuilder\Compilers\Exceptions\NotSupportedException;
 
 /**
  * Stores information about available compilers,
  * allows registering and searching compilers.
  */
-class Manager
+class CompilersContainer
 {
     /**
-     * @var \Mleczek\CBuilder\Compilers\Contracts\Driver[]
+     * @var \Mleczek\CBuilder\Compilers\Compiler[]
      */
     private $compilers = [];
 
@@ -38,7 +38,7 @@ class Manager
     /**
      * Get the most suitable compiler.
      *
-     * @return Driver
+     * @return Compiler
      */
     public function getOne()
     {
@@ -51,7 +51,7 @@ class Manager
      * Get the most suitable compiler of the given set.
      *
      * @param array|string $names
-     * @return Driver
+     * @return Compiler
      * @throws \Mleczek\CBuilder\Compilers\Exceptions\NotSupportedException
      */
     public function getOneOf($names)
