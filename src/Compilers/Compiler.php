@@ -4,38 +4,33 @@
 namespace Mleczek\CBuilder\Compilers;
 
 
-/**
- * Represents the executable compiler
- * used for building and linking libraries.
- */
 interface Compiler
 {
     /**
-     * Check whether driver can be used correctly.
+     * Get whether compiler is supported
+     * and can be used to perform compilations.
      *
      * @return bool
      */
     public function isSupported();
 
     /**
-     * Get full path to the compiler executable
-     * (including file name and extension).
-     *
-     * @return string
-     */
-    public function getPath();
-
-    /**
-     * Get version in "major.minor.patch" format.
-     *
-     * @return string
+     * @link http://semver.org/
+     * @return string Semantic version.
      */
     public function getVersion();
 
     /**
-     * @return string
+     * @param string|string[] $files
+     * @return $this
      */
-    public function getArchitecture();
+    public function setSourceFiles($files);
+
+    /**
+     * @param string $filePath
+     * @return $this
+     */
+    public function saveOutputAs($filePath);
 
     /**
      * @param string $arch
@@ -44,37 +39,28 @@ interface Compiler
     public function setArchitecture($arch);
 
     /**
-     * Get preprocessor macros.
-     *
-     * @return array
+     * @param bool $enabled
+     * @return $this
      */
-    public function getDefines();
+    public function withDebugSymbols($enabled = true);
 
     /**
-     * Register preprocessor macro.
+     * @param bool $enabled
+     * @return $this
+     */
+    public function withIntermediateFiles($enabled = true);
+
+    /**
+     * Register macro constraint.
      *
      * @param string $name
      * @param string $value
      * @return $this
      */
-    public function setDefine($name, $value);
+    public function define($name, $value);
 
     /**
-     * @return $this
+     * Build artifacts.
      */
-    public function includeDebugSymbols();
-
-    /**
-     * @return $this
-     */
-    public function includeTempFiles();
-
-    /**
-     * Execute the compiler and return exit code.
-     *
-     * @param array $sources List of source files.
-     * @param null|array $output Will be filled with every line of output from the command.
-     * @return int Process exit code.
-     */
-    public function compile(array $sources, array &$output = null);
+    public function compile();
 }

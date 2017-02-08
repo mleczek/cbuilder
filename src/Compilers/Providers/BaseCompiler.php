@@ -8,34 +8,75 @@ use Mleczek\CBuilder\Compilers\Compiler;
 
 abstract class BaseCompiler implements Compiler
 {
-    const BUILD_DIR = "build";
+    /**
+     * @var bool
+     */
+    protected $supported = false;
+
+    /**
+     * @var string[]
+     */
+    protected $sourceFiles = [];
 
     /**
      * @var string
      */
-    protected $arch;
+    protected $outputPath;
 
     /**
-     * @var array
+     * @var string
+     */
+    protected $architecture;
+
+    /**
+     * @var bool
+     */
+    protected $debugSymbols;
+
+    /**
+     * @var bool
+     */
+    protected $intermediateFiles;
+
+    /**
+     * @var string[]
      */
     protected $defines = [];
 
     /**
-     * @var bool
+     * Get whether compiler is supported
+     * and can be used to perform compilations.
+     *
+     * @return bool
      */
-    protected $debugSymbolsFlag = false;
-
-    /**
-     * @var bool
-     */
-    protected $tempFilesFlag = false;
-
-    /**
-     * @return string
-     */
-    public function getArchitecture()
+    public function isSupported()
     {
-        return $this->arch;
+        return $this->supported;
+    }
+
+    /**
+     * @param string|string[] $files
+     * @return $this
+     */
+    public function setSourceFiles($files)
+    {
+        $this->sourceFiles = (array)$files;
+        return $this;
+    }
+
+    /**
+     * @param string $filePath Output file name (dir must exists).
+     * @return $this
+     */
+    public function saveOutputAs($filePath)
+    {
+        $dir = dirname($filePath);
+        if(!is_dir($dir)) {
+            throw new \InvalidArgumentException("Directory '$dir' not exists.");
+        }
+
+        $this->outputPath = $filePath;
+        return $this;
     }
 
     /**
@@ -44,73 +85,57 @@ abstract class BaseCompiler implements Compiler
      */
     public function setArchitecture($arch)
     {
-        $this->arch = $arch;
+        $this->architecture = $arch;
         return $this;
     }
 
     /**
-     * Get preprocessor macros.
-     *
-     * @return array
+     * @param bool $enabled
+     * @return $this
      */
-    public function getDefines()
+    public function withDebugSymbols($enabled = true)
     {
-        return $this->defines;
+        $this->debugSymbols = $enabled;
+        return $this;
     }
 
     /**
-     * Register preprocessor macro.
+     * @param bool $enabled
+     * @return $this
+     */
+    public function withIntermediateFiles($enabled = true)
+    {
+        $this->intermediateFiles = $enabled;
+        return $this;
+    }
+
+    /**
+     * Register macro constraint.
      *
      * @param string $name
      * @param string $value
      * @return $this
      */
-    public function setDefine($name, $value)
+    public function define($name, $value)
     {
+        if(preg_match('/^[A-Z_]+$/', $name) == 0) {
+            throw new \InvalidArgumentException("The macro name '$name' can contain only uppercase chars (A-Z) and underscore symbol.");
+        }
+
         $this->defines[$name] = $value;
         return $this;
     }
 
     /**
-     * @return $this
+     * @param mixed $args,... Arguments combined with space.
      */
-    public function includeDebugSymbols()
+    protected function run(...$args)
     {
-        $this->debugSymbolsFlag = true;
-        return $this;
-    }
+        $arrToString = function($e) {
+            return is_array($e) ? implode(' ', $e) : $e;
+        };
 
-    /**
-     * @return $this
-     */
-    public function includeTempFiles()
-    {
-        $this->tempFilesFlag = true;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getBuildPath()
-    {
-        return self::BUILD_DIR .'/'. $this->getArchitecture() .'/output.exe';
-    }
-
-    /**
-     * Execute command and return exit code.
-     *
-     * @param array $params
-     * @param null|array $output Will be filled with every line of output from the command.
-     * @return int Process exit code.
-     */
-    public function run(array $params = [], array &$output = null)
-    {
-        // Note: "2>&1" redirects stderr to stdout
-        $command = $this->getPath() .' '. implode(' ', $params) .' 2>&1';
-        $exitCode = -1;
-
-        exec($command, $output, $exitCode);
-        return $exitCode;
+        $command = implode(' ', array_map($arrToString, $args));
+        exec($command);
     }
 }

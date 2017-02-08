@@ -2,9 +2,9 @@
 
 return [
 
-    'outputDir' => 'build',
+    'output_dir' => 'build',
 
-    'drivers' => [
+    'providers' => [
         'gcc' => \Mleczek\CBuilder\Compilers\Providers\GCC::class,
     ],
 

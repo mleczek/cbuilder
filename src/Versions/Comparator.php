@@ -1,20 +1,18 @@
 <?php
 
 
-namespace Mleczek\CBuilder\Dependencies\Versions;
+namespace Mleczek\CBuilder\Versions;
 
-use Composer\Semver\Comparator;
+
 use Composer\Semver\Semver;
 
-
 /**
- * Common operations performed on the semantic versions.
+ * Helper class to operate on the semantic versions.
  *
  * @Injectable
  * @link http://semver.org/
- * @link https://github.com/composer/semver
  */
-class VersionsHelper
+class Comparator
 {
     /**
      * Evaluates the expression: $version1 > $version2.

@@ -7,10 +7,10 @@
   ],
   "define": {
     "debug": {
-      "message": "\"Debug mode\""
+      "MESSAGE": "\"Debug mode\""
     },
     "release": {
-      "message": "\"Release mode\""
+      "MESSAGE": "\"Release mode\""
     }
   }
 }

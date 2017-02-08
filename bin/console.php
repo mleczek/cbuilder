@@ -16,18 +16,17 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // DI Container
 $builder = new DI\ContainerBuilder();
-$builder->useAnnotations(true);
 $container = $builder->build();
 
-// Console Configuration
-$config = $container->get(\Mleczek\CBuilder\Configuration::class);
-$config->setDir(__DIR__ . '/../config');
+// Environment Variables
+$env = $container->get(\Mleczek\CBuilder\System\Environment::class);
+$env->setConfigDir(__DIR__ . '/../config');
 
 // Console Application
 $application = new Symfony\Component\Console\Application();
-$application->setName($config->get('console.name'));
+$application->setName($env->config('console.name'));
 
-foreach ($config->get('console.commands') as $command) {
+foreach ($env->config('console.commands') as $command) {
     $application->add($container->make($command));
 }
 

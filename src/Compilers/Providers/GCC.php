@@ -4,20 +4,18 @@
 namespace Mleczek\CBuilder\Compilers\Providers;
 
 
-use Mleczek\CBuilder\Compilers\Providers\BaseCompiler;
 use Mleczek\CBuilder\Compilers\Compiler;
-use Mleczek\CBuilder\Compilers\Exceptions\NotSupportedException;
+use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
+use Mleczek\CBuilder\Compilers\Exceptions\UnknownCompilerVersionException;
 
 /**
- * Clang compiler driver.
- *
  * @link https://gcc.gnu.org/ (Linux)
  * @link http://www.mingw.org/ (Windows)
  */
 class GCC extends BaseCompiler
 {
     /**
-     * CLI options set by specified architectures.
+     * Console options required by the specified architectures.
      *
      * @var array
      */
@@ -27,113 +25,85 @@ class GCC extends BaseCompiler
     ];
 
     /**
-     * Check whether driver can be used correctly.
-     *
-     * @return bool
+     * GCC constructor.
      */
-    public function isSupported()
+    public function __construct()
     {
-        // FIXME: Return real value...
-
-        return true;
+        try {
+            $this->getVersion();
+            $this->supported = true;
+        } catch (\Exception $e) {
+            $this->supported = false;
+        }
     }
 
     /**
-     * Get full path to the compiler executable.
-     *
-     * @return string
-     */
-    public function getPath()
-    {
-        // FIXME: Find path in system
-
-        return 'M:\vendors\mingw\bin\gcc';
-    }
-
-    /**
-     * Get version in "major.minor.patch" format.
-     *
-     * @return string
+     * @link http://semver.org/
+     * @return string Semantic version.
+     * @throws CompilerNotFoundException
+     * @throws UnknownCompilerVersionException
      */
     public function getVersion()
     {
-        // FIXME: Get version from clang++ --version
+        $output = [];
+        $exitCode = 0;
+        exec('gcc --version', $output, $exitCode);
 
-        return '5.3.0';
-    }
-
-    /**
-     * @return array
-     * @throws NotSupportedException
-     */
-    protected function getArchOption()
-    {
-        $arch = $this->getArchitecture();
-        if(array_key_exists($arch, self::ARCHITECTURE_OPTIONS)) {
-            return [self::ARCHITECTURE_OPTIONS[$arch]];
+        if ($exitCode != 0) {
+            throw new CompilerNotFoundException("The gcc compiler couldn't be found. Check if the gcc is added to your path environment variables.");
         }
 
-        throw new NotSupportedException(/* FIXME: Architecture not supported message */);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getDefinesOptions()
-    {
-        $result = [];
-
-        // Register user-defined macros.
-        foreach($this->getDefines() as $name => $value) {
-            $escaped = str_replace('"', '\\"', $value);
-
-            $result[] = '-D';
-            $result[] = "$name=\"$escaped\""; // TODO: Deep test escaping characters
+        $matches = [];
+        if (preg_match('/[0-9]+\.[0-9]+\.[0-9]+/', $output[0], $matches) != 1) {
+            throw new UnknownCompilerVersionException("The gcc compiler was found, but failed at establishing the compiler version. Please open the issue and attach result of the 'gcc --version', thanks!");
         }
 
-        return $result;
+        return $matches[0];
     }
 
     /**
-     * @return array
+     * @param string $arch
+     * @return $this
      */
-    private function getDebugSymbolOption()
+    public function setArchitecture($arch)
     {
-        if(!$this->debugSymbolsFlag) {
-            return [];
+        $available = array_keys(self::ARCHITECTURE_OPTIONS);
+        if(!in_array($arch, $available)) {
+            throw new \InvalidArgumentException("Architecture '$arch' isn't supported.");
         }
 
-        return ['-g'];
+        parent::setArchitecture($arch);
+        return $this;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    private function getTempFilesOption()
+    private function getDefineCommandOptions()
     {
-        if(!$this->tempFilesFlag) {
-            return [];
+        $results = [];
+        foreach($this->defines as $name => $value) {
+            $value = str_replace('"', '\\"', $value);
+
+            $results[] = '-D';
+            $results[] = "$name=\"$value\"";
         }
 
-        return ['-save-temps=obj'];
+        return $results;
     }
 
     /**
-     * Execute the compiler and return exit code.
-     *
-     * @param array $sources List of source files.
-     * @param null|array $output Will be filled with every line of output from the command.
-     * @return int Process exit code.
+     * Build artifacts.
      */
-    public function compile(array $sources, array &$output = null)
+    public function compile()
     {
-        return $this->run(array_merge(
-            $sources,
-            ['-o', $this->getBuildPath()],
-            $this->getArchOption(),
-            $this->getDefinesOptions(),
-            $this->getDebugSymbolOption(),
-            $this->getTempFilesOption()
-        ), $output);
+        $this->run('gcc',
+            $this->sourceFiles,
+            self::ARCHITECTURE_OPTIONS[$this->architecture],
+            ['-o', $this->outputPath],
+            $this->debugSymbols ? '-g' : [],
+            $this->intermediateFiles ? '-save-temps=obj' : [],
+            $this->getDefineCommandOptions()
+        );
     }
 }
