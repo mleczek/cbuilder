@@ -18,35 +18,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Build extends Command
 {
     /**
-     * @var \Mleczek\CBuilder\Configuration
+     * @Inject
+     * @var Configuration
      */
     private $config;
 
     /**
+     * @Inject
      * @var Factory
      */
     private $factory;
 
     /**
+     * @Inject
      * @var CompilersContainer
      */
     protected $compilers;
-
-    /**
-     * Build constructor.
-     *
-     * @param \Mleczek\CBuilder\Configuration $config
-     * @param Factory $factory
-     * @param CompilersContainer $compilers
-     */
-    public function __construct(Configuration $config, Factory $factory, CompilersContainer $compilers)
-    {
-        parent::__construct();
-
-        $this->config = $config;
-        $this->factory = $factory;
-        $this->compilers = $compilers;
-    }
 
     /**
      * Configures the current command.
@@ -54,11 +41,10 @@ class Build extends Command
     protected function configure()
     {
         $this->setName('build')
-            ->setDescription('Build library/project artifacts.')
-        //->setHelp('...') TODO: Add help description
-        ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Use debug macros and include debug symbols as well as temp files.');
-        //->addOption('compiler', 'c', InputOption::VALUE_REQUIRED, 'Strict use of a specific compiler.') // TODO: Implement
-        //->addOption('arch', 'a', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Create artifacts only for a specific architecture(s).'); // TODO: Implement
+            ->setDescription('Run compilation and linking process and save produced artifacts.')
+            ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Use debug macros and include debug symbols as well as temp files.')
+            ->addOption('compiler', null, InputOption::VALUE_REQUIRED, 'Strict use of a specific compiler.')
+            ->addOption('arch', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Create artifacts only for a specific architecture(s).');
     }
 
     /**
@@ -95,11 +81,12 @@ class Build extends Command
         $this->registerAllCompilers($output);
 
         $this->factory
-            ->makeRunner(Package::current())
+            ->makeBuilderFor(Package::current())
             ->setDebugMode($input->getOption('debug'))
+            ->setCompiler($input->getOption('compiler'))
+            ->setArchitecture($input->getOption('arch'))
             ->run($output);
 
         return 0; // means "ok"
     }
-
 }

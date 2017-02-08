@@ -12,28 +12,21 @@ use Mleczek\CBuilder\Compilers\Exceptions\NotSupportedException;
 /**
  * Stores information about available compilers,
  * allows registering and searching compilers.
+ *
+ * @Injectable
  */
 class CompilersContainer
 {
     /**
-     * @var \Mleczek\CBuilder\Compilers\Compiler[]
+     * @var Compiler[]
      */
     private $compilers = [];
 
     /**
+     * @Inject
      * @var Container
      */
     protected $container;
-
-    /**
-     * CompilersManager constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
 
     /**
      * Get the most suitable compiler.

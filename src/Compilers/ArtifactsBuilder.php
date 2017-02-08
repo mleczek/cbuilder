@@ -9,14 +9,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Handler compiling and linking process
  * for specified package (including modules).
+ *
+ * @Injectable(scope="prototype")
  */
 class ArtifactsBuilder
 {
     /**
+     * @Inject
      * @var Package
      */
     private $package;
+
     /**
+     * @Inject
      * @var CompilersContainer
      */
     private $compilers;
@@ -27,24 +32,49 @@ class ArtifactsBuilder
     private $debugMode;
 
     /**
-     * Runner constructor.
-     *
-     * @param Package $package
-     * @param CompilersContainer $compilers
-     */
-    public function __construct(Package $package, CompilersContainer $compilers)
-    {
-        $this->package = $package;
-        $this->compilers = $compilers;
-    }
-
-    /**
      * @param bool $enabled
      * @return $this
      */
     public function setDebugMode($enabled)
     {
         $this->debugMode = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    private function getDefaultCompiler()
+    {
+        $this->package->getCompilers();
+    }
+
+    /**
+     * Force to use specified compiler or get the default one.
+     *
+     * @param string|null $compiler
+     * @return $this
+     */
+    public function setCompiler($compiler = null)
+    {
+        if(is_null($compiler)) {
+            $compiler = $this->getDefaultCompiler();
+        }
+
+        $this->compiler = $compiler;
+        return $this;
+    }
+
+    /**
+     * Force to use specified compilers or get the default ones.
+     *
+     * @param string|null $arch Comma separated.
+     * @return $this
+     */
+    public function setArchitecture($arch = null)
+    {
+        // TODO: ...
+
         return $this;
     }
 
@@ -106,11 +136,11 @@ class ArtifactsBuilder
 
         // Build stats
         if ($done == $total) {
-            $output->write("Build stats... <info>$done/$total</info>");
+            $output->write("Build completed: <info>$done/$total</info>");
         } else if ($done > 0) {
-            $output->write("Build stats... <comment>$done/$total</comment>");
+            $output->write("Build completed: <comment>$done/$total</comment>");
         } else {
-            $output->write("Build stats... <fg=red>$done/$total</>");
+            $output->write("Build completed: <fg=red>$done/$total</>");
         }
     }
 }

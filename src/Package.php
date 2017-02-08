@@ -6,6 +6,8 @@ namespace Mleczek\CBuilder;
 
 /**
  * Read and store cbuilder.json file data.
+ *
+ * @Injectable
  */
 class Package
 {

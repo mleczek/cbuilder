@@ -4,6 +4,9 @@
 namespace Mleczek\CBuilder;
 
 
+/**
+ * @Injectable
+ */
 class Configuration
 {
     /**
@@ -19,7 +22,7 @@ class Configuration
     public function setDir($dir)
     {
         if (!is_dir($dir)) {
-            // TODO: Throw exception...
+            throw new \InvalidArgumentException("Directory '$dir' not exists.");
         }
 
         $this->dir = $dir;
@@ -43,7 +46,7 @@ class Configuration
         // Resolve value
         foreach ($parts as $part) {
             if (!isset($result[$part])) {
-                // TODO: Throw exception...
+                throw new \InvalidArgumentException("Cannot find '$key' configuration value.");
             }
 
             $result = $result[$part];

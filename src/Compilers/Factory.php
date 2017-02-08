@@ -4,24 +4,25 @@
 namespace Mleczek\CBuilder\Compilers;
 
 
+use DI\Container;
 use Mleczek\CBuilder\Package;
 
+/**
+ * @Injectable
+ */
 class Factory
 {
     /**
+     * @Inject
      * @var CompilersContainer
      */
     private $compilers;
 
     /**
-     * Factory constructor.
-     *
-     * @param CompilersContainer $compilers
+     * @Inject
+     * @var Container
      */
-    public function __construct(CompilersContainer $compilers)
-    {
-        $this->compilers = $compilers;
-    }
+    private $container;
 
     /**
      * Get new instance of the runner.
@@ -29,8 +30,8 @@ class Factory
      * @param Package $package
      * @return ArtifactsBuilder
      */
-    public function makeRunner(Package $package)
+    public function makeBuilderFor(Package $package)
     {
-        return new ArtifactsBuilder($package, $this->compilers);
+        return $this->container->make(ArtifactsBuilder::class, [$package]);
     }
 }

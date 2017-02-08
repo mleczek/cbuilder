@@ -4,6 +4,7 @@
 namespace Mleczek\CBuilder\Commands;
 
 
+use Mleczek\CBuilder\Configuration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,21 +15,16 @@ use Symfony\Component\Filesystem\Filesystem;
 class Clean extends Command
 {
     /**
+     * @Inject
      * @var Filesystem
      */
-    protected $fs;
+    private $fs;
 
     /**
-     * Clean constructor.
-     *
-     * @param Filesystem $fs
+     * @Inject
+     * @var Configuration
      */
-    public function __construct(Filesystem $fs)
-    {
-        parent::__construct();
-
-        $this->fs = $fs;
-    }
+    private $config;
 
     /**
      * Configures the current command.
@@ -36,8 +32,7 @@ class Clean extends Command
     protected function configure()
     {
         $this->setName('clean')
-            ->setDescription('Remove build command artifacts.')
-            ->setHelp('Remove all artifacts created during executing the build command.');
+            ->setDescription('Remove artifacts produced by the build command.');
             //->addOption('modules', 'm', InputOption::VALUE_NONE, 'Perform cleaning also for modules artifacts.'); TODO: Implement...
     }
 
@@ -52,13 +47,14 @@ class Clean extends Command
     {
         try {
             $output->write('Clean... ');
-            $this->fs->remove('build'); // FIXME: Move "build" dir name to configuration
+
+            $dir = $this->config->get('compilers.outputDir');
+            $this->fs->remove($dir);
 
             $output->write('<info>OK</info>');
             return 0; // means "ok"
         }
         catch(IOException $e) {
-            // TODO: Support verbose levels
             $output->writeln('<fg=red>FAIL</>');
             $output->write("<error>{$e->getMessage()}</error>");
             return -1;
