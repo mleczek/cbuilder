@@ -2,9 +2,8 @@
 
 // Check CWD (Current Working Directory)
 if (!file_exists('cbuilder.json')) {
-    // FIXME: Uncomment below lines (commented for easier developing)
-    //echo "Current directory is not recognized as the cbuilder package, check path or create new package using 'cbuilder init' command.";
-    //exit(-1);
+    echo "Working directory is not recognized as the cbuilder package, check path or create new package using 'cbuilder init' command.";
+    exit(-1);
 }
 
 // Script Execution Configuration
