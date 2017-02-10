@@ -1,7 +1,7 @@
 # Package Manager for C++
 
-[![Build Status](https://travis-ci.org/mleczek/cbuilder.svg)](https://travis-ci.org/mleczek/cbuilder)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![Build Status](https://travis-ci.org/mleczek/cbuilder.svg?branch=master)](https://travis-ci.org/mleczek/cbuilder)
+[![license](https://img.shields.io/github/license/mleczek/cbuilder.svg)](https://opensource.org/licenses/MIT)
 
 ## Contributing
 
