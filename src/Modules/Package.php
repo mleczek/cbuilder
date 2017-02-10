@@ -10,11 +10,11 @@ use Mleczek\CBuilder\System\Filesystem;
 
 /**
  * The package file information.
- *
- * @Injectable(scope="prototype")
  */
 class Package
 {
+    const FILE_NAME = 'cbuilder.json';
+
     /**
      * Parsed json file.
      *
@@ -44,7 +44,7 @@ class Package
      * @param Filesystem $filesystem
      * @param string $filePath
      */
-    public function __construct(Factory $factory, Filesystem $filesystem, $filePath = 'cbuilder.json')
+    public function __construct(Factory $factory, Filesystem $filesystem, $filePath = self::FILE_NAME)
     {
         $this->filesystem = $filesystem;
         $this->factory = $factory;
@@ -168,7 +168,7 @@ class Package
      */
     public function getCompilers()
     {
-        return $this->get('compilers', []);
+        return $this->get('compiler', []);
     }
 
     /**

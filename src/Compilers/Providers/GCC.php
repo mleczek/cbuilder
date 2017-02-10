@@ -47,14 +47,14 @@ class GCC extends BaseCompiler
     {
         $output = [];
         $exitCode = 0;
-        exec('gcc --version', $output, $exitCode);
+        exec('gcc -dumpversion', $output, $exitCode);
 
         if ($exitCode != 0) {
             throw new CompilerNotFoundException("The gcc compiler couldn't be found. Check if the gcc is added to your path environment variables.");
         }
 
         $matches = [];
-        if (preg_match('/[0-9]+\.[0-9]+\.[0-9]+/', $output[0], $matches) != 1) {
+        if (preg_match('/^[0-9]+\.[0-9]+\.[0-9]+$/', $output[0], $matches) != 1) {
             throw new UnknownCompilerVersionException("The gcc compiler was found, but failed at establishing the compiler version. Please open the issue and attach result of the 'gcc --version', thanks!");
         }
 

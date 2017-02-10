@@ -9,7 +9,6 @@ use Composer\Semver\Semver;
 /**
  * Helper class to operate on the semantic versions.
  *
- * @Injectable
  * @link http://semver.org/
  */
 class Comparator
@@ -90,13 +89,12 @@ class Comparator
      * Determine if given version satisfies given constraints.
      *
      * @param string $version
-     * @param string|string[] $constraints
+     * @param string $constraint
      * @return bool
      */
-    public function satisfies($version, $constraints)
+    public function satisfies($version, $constraint)
     {
-        $constraints = (array)$constraints;
-        return Semver::satisfies($version, $constraints);
+        return Semver::satisfies($version, $constraint);
     }
 
     /**

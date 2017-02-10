@@ -45,12 +45,21 @@ class Container
 
     /**
      * @param string $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->compilers[$name]);
+    }
+
+    /**
+     * @param string $name
      * @return Compiler
      * @throws CompilerNotFoundException
      */
     public function get($name)
     {
-        if(!isset($this->compilers[$name])) {
+        if(!$this->has($name)) {
             throw new CompilerNotFoundException("The '$name' compiler not exists.");
         }
 

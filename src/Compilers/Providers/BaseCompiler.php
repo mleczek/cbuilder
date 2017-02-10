@@ -71,7 +71,7 @@ abstract class BaseCompiler implements Compiler
     public function saveOutputAs($filePath)
     {
         $dir = dirname($filePath);
-        if(!is_dir($dir)) {
+        if (!is_dir($dir)) {
             throw new \InvalidArgumentException("Directory '$dir' not exists.");
         }
 
@@ -118,7 +118,7 @@ abstract class BaseCompiler implements Compiler
      */
     public function define($name, $value)
     {
-        if(preg_match('/^[A-Z_]+$/', $name) == 0) {
+        if (preg_match('/^[A-Z_]+$/', $name) == 0) {
             throw new \InvalidArgumentException("The macro name '$name' can contain only uppercase chars (A-Z) and underscore symbol.");
         }
 
@@ -131,7 +131,7 @@ abstract class BaseCompiler implements Compiler
      */
     protected function run(...$args)
     {
-        $arrToString = function($e) {
+        $arrToString = function ($e) {
             return is_array($e) ? implode(' ', $e) : $e;
         };
 

@@ -87,8 +87,8 @@ class Build extends Command
 
         $this->tools->makeArtifactsBuilder($package)
             ->useDebugMode($input->getOption('debug'))
-            ->setArchitectures($input->getOption('compiler'))
-            ->setCompiler($input->getOption('arch'))
+            ->setArchitectures($input->getOption('arch'))
+            ->setCompiler($input->getOption('compiler'))
             ->build();
     }
 

@@ -1,24 +1,60 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "name": "Package",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "name",
-    "description"
-  ],
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Package name using 'org-name/package-name' format."
-    },
-    "type": {
-      "enum": ["library", "project"],
-      "description": "Package type, either 'library' for common packages or 'project' for other purposes."
-    },
-    "description": {
-      "type": "string",
-      "description": "Short package description."
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "name"
+    ],
+    "properties": {
+        "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+/[a-z0-9_-]+$",
+            "description": "Package name using 'org/name' format."
+        },
+        "type": {
+            "enum": [
+                "project",
+                "library"
+            ],
+            "description": "Either 'library' for static and shared libraries or 'project' for executable projects. The default value is 'library'."
+        },
+        "include": {
+            "type": "string",
+            "description": "Path to the directory containing header files (.h and .hpp). The default is 'include'."
+        },
+        "source": {
+            "type": "string",
+            "description": "Path to the directory containing source files (.c and .cpp). The default is 'src'."
+        },
+        "compiler": {
+            "type": "object",
+            "description": "List of supported compilers. By default one of the locally supported compilers is used.",
+            "additionalProperties": {
+                "type": "string",
+                "description": "The compiler name (key) and version constraint (value)."
+            }
+        },
+        "arch": {
+            "type": "array",
+            "description": "List of supported architectures. The defaults are 'x86' and 'x64'.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "define": {
+            "type": "object",
+            "description": "List of preprocessor macros.",
+            "additionalProperties": false,
+            "properties": {
+                "debug": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "release": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        }
     }
-  }
 }

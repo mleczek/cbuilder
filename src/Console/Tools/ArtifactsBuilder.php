@@ -6,9 +6,11 @@ namespace Mleczek\CBuilder\Console\Tools;
 
 use Mleczek\CBuilder\Compilers\Compiler;
 use Mleczek\CBuilder\Compilers\Container;
+use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
 use Mleczek\CBuilder\Modules\Package;
 use Mleczek\CBuilder\System\Environment;
 use Mleczek\CBuilder\System\Filesystem;
+use Mleczek\CBuilder\Versions\Comparator;
 
 /**
  * Perform linking and compiling process of the package.
@@ -36,25 +38,24 @@ class ArtifactsBuilder
     private $architectures = [];
 
     /**
-     * @Inject
      * @var Environment
      */
     private $env;
 
     /**
-     * @Inject
      * @var Filesystem
      */
     private $filesystem;
 
     /**
-     * @Inject
      * @var Container
      */
     private $compilers;
+
     /**
-     * @var Filesystem
+     * @var Comparator
      */
+    private $versions;
 
     /**
      * @param Environment $env
@@ -62,12 +63,13 @@ class ArtifactsBuilder
      * @param Container $compilers
      * @param Package $package
      */
-    public function __construct(Environment $env, Filesystem $fs, Container $compilers, Package $package)
+    public function __construct(Environment $env, Filesystem $fs, Container $compilers, Package $package, Comparator $versions)
     {
         $this->env = $env;
         $this->filesystem = $fs;
         $this->compilers = $compilers;
         $this->package = $package;
+        $this->versions = $versions;
     }
 
     /**
@@ -81,12 +83,12 @@ class ArtifactsBuilder
     }
 
     /**
-     * @param string|null $compiler
+     * @param string|null $compilerName
      * @return $this
      */
-    public function setCompiler($compiler)
+    public function setCompiler($compilerName)
     {
-        $this->compiler = $compiler;
+        $this->compiler = $compilerName;
         return $this;
     }
 
@@ -95,10 +97,33 @@ class ArtifactsBuilder
      * or best suitable from the package file.
      *
      * @return Compiler
+     * @throws CompilerNotFoundException
      */
     private function getCompiler()
     {
-        // TODO: ...
+        // If set via cli then use specified compiler
+        if(!is_null($this->compiler)) {
+            return $this->compilers->get($this->compiler);
+        }
+
+        // Or find preferred in package configuration
+        if(!empty($this->package->getCompilers())) {
+            foreach($this->package->getCompilers() as $name => $constraint) {
+                // Check whether compiler with given name was registered
+                if($this->compilers->has($name)) {
+                    $compiler = $this->compilers->get($name);
+
+                    // If compiler match given version constraint
+                    if($this->versions->satisfies($compiler->getVersion(), $constraint)) {
+                        return $compiler;
+                    }
+                }
+            }
+
+            throw new CompilerNotFoundException("Cannot find any of the compilers defined in the package file.");
+        }
+
+        // Or get any of the available compilers
         return $this->compilers->getOne();
     }
 
@@ -120,8 +145,11 @@ class ArtifactsBuilder
      */
     private function getArchitectures()
     {
-        // TODO: ...
-        return ['x86', 'x64'];
+        if(!empty($this->architectures)) {
+            return $this->architectures;
+        }
+
+        return $this->package->getArchitectures();
     }
 
     /**

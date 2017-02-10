@@ -1,10 +1,6 @@
 {
   "name": "org/package",
-  "description": "...",
   "type": "project",
-  "arch": [
-    "x86"
-  ],
   "define": {
     "debug": {
       "MESSAGE": "\"Debug mode\""
