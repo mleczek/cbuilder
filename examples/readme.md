@@ -20,7 +20,7 @@ In `cbuilder.json` file register repository:
 
 ```json
 "repository": {
-  "type": "file",
+  "type": "local",
   "url": "path/to/cbuilder/examples"
 }
 ```

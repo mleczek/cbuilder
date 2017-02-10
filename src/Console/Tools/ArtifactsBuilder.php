@@ -38,9 +38,9 @@ class ArtifactsBuilder
     private $architectures = [];
 
     /**
-     * @var Environment
+     * @var PathResolver
      */
-    private $env;
+    private $path;
 
     /**
      * @var Filesystem
@@ -58,14 +58,14 @@ class ArtifactsBuilder
     private $versions;
 
     /**
-     * @param Environment $env
+     * @param PathResolver $path
      * @param Filesystem $fs
      * @param Container $compilers
      * @param Package $package
      */
-    public function __construct(Environment $env, Filesystem $fs, Container $compilers, Package $package, Comparator $versions)
+    public function __construct(PathResolver $path, Filesystem $fs, Container $compilers, Package $package, Comparator $versions)
     {
-        $this->env = $env;
+        $this->path = $path;
         $this->filesystem = $fs;
         $this->compilers = $compilers;
         $this->package = $package;
@@ -102,19 +102,19 @@ class ArtifactsBuilder
     private function getCompiler()
     {
         // If set via cli then use specified compiler
-        if(!is_null($this->compiler)) {
+        if (!is_null($this->compiler)) {
             return $this->compilers->get($this->compiler);
         }
 
         // Or find preferred in package configuration
-        if(!empty($this->package->getCompilers())) {
-            foreach($this->package->getCompilers() as $name => $constraint) {
+        if (!empty($this->package->getCompilers())) {
+            foreach ($this->package->getCompilers() as $name => $constraint) {
                 // Check whether compiler with given name was registered
-                if($this->compilers->has($name)) {
+                if ($this->compilers->has($name)) {
                     $compiler = $this->compilers->get($name);
 
                     // If compiler match given version constraint
-                    if($this->versions->satisfies($compiler->getVersion(), $constraint)) {
+                    if ($this->versions->satisfies($compiler->getVersion(), $constraint)) {
                         return $compiler;
                     }
                 }
@@ -145,7 +145,7 @@ class ArtifactsBuilder
      */
     private function getArchitectures()
     {
-        if(!empty($this->architectures)) {
+        if (!empty($this->architectures)) {
             return $this->architectures;
         }
 
@@ -162,16 +162,13 @@ class ArtifactsBuilder
 
         // Register macros
         $buildMode = $this->debugMode ? 'debug' : 'release';
-        foreach($this->package->getDefines($buildMode) as $name => $value) {
+        foreach ($this->package->getDefines($buildMode) as $name => $value) {
             $compiler->define($name, $value);
         }
 
         // Build artifacts for each architecture
-        foreach($architectures as $arch) {
-            // TODO: Move logic of getting package dirs to separate service
-            // FIXME: Use extension depends on the platform and package type
-            $filename = str_replace('/', '.', $this->package->getName());
-            $path = $this->env->config('compilers.output_dir') .'/'. $arch .'/'. $filename .'.exe';
+        foreach ($architectures as $arch) {
+            $path = $this->path->getOutputPath($this->package, $arch);
 
             // Compiler expects that the output dir exists
             $this->filesystem->makeDir(dirname($path));

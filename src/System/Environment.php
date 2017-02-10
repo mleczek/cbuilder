@@ -46,4 +46,16 @@ class Environment
 
         return $result;
     }
+
+    /**
+     * Check whether current script is running
+     * under the Windows environment.
+     *
+     * @link http://php.net/manual/en/reserved.constants.php#constant.php-os
+     * @return bool
+     */
+    public function isWindows()
+    {
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    }
 }
