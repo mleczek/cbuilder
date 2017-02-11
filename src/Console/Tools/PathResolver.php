@@ -44,7 +44,7 @@ class PathResolver
      */
     public function getOutputDir()
     {
-        return $this->env->config('compilers.output_dir');
+        return $this->env->config('compilers.output');
     }
 
     /**
