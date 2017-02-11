@@ -70,7 +70,7 @@ class Filesystem
                 continue;
             }
 
-            $this->rm($item);
+            $this->remove($path .'/'. $item);
         }
 
         return rmdir($path);

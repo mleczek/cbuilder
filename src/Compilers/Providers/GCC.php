@@ -9,6 +9,9 @@ use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
 use Mleczek\CBuilder\Compilers\Exceptions\UnknownCompilerVersionException;
 
 /**
+ * TODO: Make "-Wall" option configurable (setter)
+ * TODO: Optimization level...
+ *
  * @link https://gcc.gnu.org/ (Linux)
  * @link http://www.mingw.org/ (Windows)
  */
@@ -103,6 +106,7 @@ class GCC extends BaseCompiler
         // Object file
         $this->run('gcc',
             '-c', // compile and assemble, but do not link
+            '-Wall', // all warnings messages
             $this->sourceFiles,
             self::ARCHITECTURE_OPTIONS[$this->architecture],
             ['-o', $objOutput],
@@ -151,6 +155,7 @@ class GCC extends BaseCompiler
     public function makeExecutable()
     {
         $this->run('gcc',
+            '-Wall', // all warnings messages
             $this->sourceFiles,
             self::ARCHITECTURE_OPTIONS[$this->architecture],
             ['-o', $this->outputPath],
