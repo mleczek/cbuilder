@@ -1,0 +1,7 @@
+{
+  "name": "org/package",
+  "type": "project",
+  "compiler": {
+    "gcc": "^5"
+  }
+}

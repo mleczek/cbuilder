@@ -1,0 +1,5 @@
+{
+  "name": "org/package",
+  "type": "project",
+  "arch": ["x86"]
+}
