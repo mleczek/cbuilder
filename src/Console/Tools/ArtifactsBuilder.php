@@ -168,17 +168,24 @@ class ArtifactsBuilder
 
         // Build artifacts for each architecture
         foreach ($architectures as $arch) {
-            $path = $this->path->getOutputPath($this->package, $arch);
-
-            // Compiler expects that the output dir exists
-            $this->filesystem->makeDir(dirname($path));
-
             $compiler->setArchitecture($arch)
                 ->setSourceFiles($this->package->getSourceFiles())
                 ->withDebugSymbols($this->debugMode)
-                ->withIntermediateFiles($this->debugMode)
-                ->saveOutputAs($path)
-                ->compile();
+                ->withIntermediateFiles($this->debugMode);
+
+            $path = $this->path->getOutputDir($arch);
+            $this->filesystem->makeDir($path);
+
+            if($this->package->getType() == 'library') {
+                $path = $this->path->getLibraryPath($this->package, $arch, true);
+                $compiler->saveOutputAs($path)->makeLibrary(true);
+
+                $path = $this->path->getLibraryPath($this->package, $arch, false);
+                $compiler->saveOutputAs($path)->makeLibrary(false);
+            } else {
+                $path = $this->path->getExecutablePath($this->package, $arch);
+                $compiler->saveOutputAs($path)->makeExecutable();
+            }
         }
     }
 }

@@ -60,7 +60,13 @@ interface Compiler
     public function define($name, $value);
 
     /**
-     * Build artifacts.
+     * @param bool $static
+     * @return $this
      */
-    public function compile();
+    public function makeLibrary($static = false);
+
+    /**
+     * @return $this
+     */
+    public function makeExecutable();
 }

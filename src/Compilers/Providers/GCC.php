@@ -68,7 +68,7 @@ class GCC extends BaseCompiler
     public function setArchitecture($arch)
     {
         $available = array_keys(self::ARCHITECTURE_OPTIONS);
-        if(!in_array($arch, $available)) {
+        if (!in_array($arch, $available)) {
             throw new \InvalidArgumentException("Architecture '$arch' isn't supported.");
         }
 
@@ -82,7 +82,7 @@ class GCC extends BaseCompiler
     private function getDefineCommandOptions()
     {
         $results = [];
-        foreach($this->defines as $name => $value) {
+        foreach ($this->defines as $name => $value) {
             $value = str_replace('"', '\\"', $value);
 
             $results[] = '-D';
@@ -93,9 +93,62 @@ class GCC extends BaseCompiler
     }
 
     /**
-     * Build artifacts.
+     * @param bool $static
+     * @return $this
      */
-    public function compile()
+    public function makeLibrary($static = false)
+    {
+        $objOutput = $this->outputPath .'.o';
+
+        // Object file
+        $this->run('gcc',
+            '-c', // compile and assemble, but do not link
+            $this->sourceFiles,
+            self::ARCHITECTURE_OPTIONS[$this->architecture],
+            ['-o', $objOutput],
+            $this->debugSymbols ? '-g' : [],
+            $this->intermediateFiles ? '-save-temps=obj' : [],
+            $this->getDefineCommandOptions()
+        );
+
+        // Library file
+        if($static) $this->objToStaticLib($objOutput);
+        else $this->objToSharedLib($objOutput);
+
+        return $this;
+    }
+
+    /**
+     * @param string $objPath
+     */
+    private function objToStaticLib($objPath)
+    {
+        $this->run('ar',
+            // "r" means to insert with replacement,
+            // "c" means to create a new archive,
+            // and "s" means to write an index.
+            'rcs',
+            $this->outputPath,
+            $objPath
+        );
+    }
+
+    /**
+     * @param string $objPath
+     */
+    private function objToSharedLib($objPath)
+    {
+        $this->run('gcc',
+            '-shared',
+            ['-o', $this->outputPath],
+            $objPath
+        );
+    }
+
+    /**
+     * @return $this
+     */
+    public function makeExecutable()
     {
         $this->run('gcc',
             $this->sourceFiles,
@@ -105,5 +158,7 @@ class GCC extends BaseCompiler
             $this->intermediateFiles ? '-save-temps=obj' : [],
             $this->getDefineCommandOptions()
         );
+
+        return $this;
     }
 }

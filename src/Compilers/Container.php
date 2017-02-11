@@ -76,9 +76,7 @@ class Container
             throw new CompilerNotFoundException("No compilers found.");
         }
 
-        foreach($this->compilers as $name => $provider) {
-            return $provider;
-        }
+        return array_values($this->compilers)[0];
     }
 
     /**
