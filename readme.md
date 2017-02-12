@@ -5,7 +5,7 @@
 
 The aim of this project is to create the tool like [composer](https://getcomposer.org/) or [npm](https://www.npmjs.com/), but for the c++. The image below shows basic usage example.
 
-![Basic Example Usage](resources/github.svg)
+![Basic Example Usage](resources/github.png)
 
 ## Contributing
 
