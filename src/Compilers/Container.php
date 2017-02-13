@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Compilers;
 
 use DI\Container as DIContainer;
 use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
-
 
 class Container
 {
@@ -36,7 +34,7 @@ class Container
     public function register($name, $namespace)
     {
         $compiler = $this->container->make($namespace);
-        if($compiler->isSupported()) {
+        if ($compiler->isSupported()) {
             $this->compilers[$name] = $compiler;
         }
 
@@ -59,7 +57,7 @@ class Container
      */
     public function get($name)
     {
-        if(!$this->has($name)) {
+        if (! $this->has($name)) {
             throw new CompilerNotFoundException("The '$name' compiler not exists.");
         }
 
@@ -72,8 +70,8 @@ class Container
      */
     public function getOne()
     {
-        if(empty($this->compilers)) {
-            throw new CompilerNotFoundException("No compilers found.");
+        if (empty($this->compilers)) {
+            throw new CompilerNotFoundException('No compilers found.');
         }
 
         return array_values($this->compilers)[0];
@@ -86,12 +84,12 @@ class Container
      */
     public function getOneOf($compilers)
     {
-        foreach($this->compilers as $compiler) {
-            if(in_array($compiler, $compilers)) {
+        foreach ($this->compilers as $compiler) {
+            if (in_array($compiler, $compilers)) {
                 return $this->compilers[$compiler];
             }
         }
 
-        throw new CompilerNotFoundException("Any of the given compilers is supported.");
+        throw new CompilerNotFoundException('Any of the given compilers is supported.');
     }
 }

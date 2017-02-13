@@ -1,16 +1,13 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Tools;
 
-
+use Mleczek\CBuilder\Modules\Package;
+use Mleczek\CBuilder\System\Filesystem;
 use Mleczek\CBuilder\Compilers\Compiler;
 use Mleczek\CBuilder\Compilers\Container;
-use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
-use Mleczek\CBuilder\Modules\Package;
-use Mleczek\CBuilder\System\Environment;
-use Mleczek\CBuilder\System\Filesystem;
 use Mleczek\CBuilder\Versions\Comparator;
+use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
 
 /**
  * Perform linking and compiling process of the package.
@@ -79,6 +76,7 @@ class ArtifactsBuilder
     public function useDebugMode($enabled = true)
     {
         $this->debugMode = $enabled;
+
         return $this;
     }
 
@@ -89,6 +87,7 @@ class ArtifactsBuilder
     public function setCompiler($compilerName)
     {
         $this->compiler = $compilerName;
+
         return $this;
     }
 
@@ -102,12 +101,12 @@ class ArtifactsBuilder
     private function getCompiler()
     {
         // If set via cli then use specified compiler
-        if (!is_null($this->compiler)) {
+        if (! is_null($this->compiler)) {
             return $this->compilers->get($this->compiler);
         }
 
         // Or find preferred in package configuration
-        if (!empty($this->package->getCompilers())) {
+        if (! empty($this->package->getCompilers())) {
             foreach ($this->package->getCompilers() as $name => $constraint) {
                 // Check whether compiler with given name was registered
                 if ($this->compilers->has($name)) {
@@ -120,7 +119,7 @@ class ArtifactsBuilder
                 }
             }
 
-            throw new CompilerNotFoundException("Cannot find any of the compilers defined in the package file.");
+            throw new CompilerNotFoundException('Cannot find any of the compilers defined in the package file.');
         }
 
         // Or get any of the available compilers
@@ -133,7 +132,8 @@ class ArtifactsBuilder
      */
     public function setArchitectures($arch)
     {
-        $this->architectures = (array)$arch;
+        $this->architectures = (array) $arch;
+
         return $this;
     }
 
@@ -145,7 +145,7 @@ class ArtifactsBuilder
      */
     private function getArchitectures()
     {
-        if (!empty($this->architectures)) {
+        if (! empty($this->architectures)) {
             return $this->architectures;
         }
 
@@ -176,7 +176,7 @@ class ArtifactsBuilder
             $path = $this->path->getOutputDir($arch);
             $this->filesystem->makeDir($path);
 
-            if($this->package->getType() == 'library') {
+            if ($this->package->getType() == 'library') {
                 $path = $this->path->getLibraryPath($this->package, $arch, true);
                 $compiler->saveOutputAs($path)->makeLibrary(true);
 

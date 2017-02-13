@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Tools;
-
 
 use Mleczek\CBuilder\Modules\Package;
 use Mleczek\CBuilder\System\Environment;
@@ -23,7 +21,7 @@ class PathResolver
                 'static' => '.a',
                 'shared' => '.so',
             ],
-        ]
+        ],
     ];
 
     /**
@@ -46,8 +44,8 @@ class PathResolver
     public function getOutputDir($arch = null)
     {
         $dir = $this->env->config('compilers.output');
-        if(!is_null($arch)) {
-            return $dir .'/'. $arch;
+        if (! is_null($arch)) {
+            return $dir.'/'.$arch;
         }
 
         return $dir;
@@ -64,7 +62,7 @@ class PathResolver
         $os = $this->env->isWindows() ? 'windows' : 'linux';
         $ext = self::EXTENSIONS[$os][$package->getType()];
 
-        return $package->getDir() .'/'. $this->getOutputDir($arch) .'/'. $name . $ext;
+        return $package->getDir().'/'.$this->getOutputDir($arch).'/'.$name.$ext;
     }
 
     /**
@@ -81,7 +79,7 @@ class PathResolver
         $libType = $static ? 'static' : 'shared';
         $ext = self::EXTENSIONS[$os][$package->getType()][$libType];
 
-        return $package->getDir() .'/'. $this->getOutputDir($arch) .'/'. $name . $ext;
+        return $package->getDir().'/'.$this->getOutputDir($arch).'/'.$name.$ext;
     }
 
     /**
@@ -98,7 +96,7 @@ class PathResolver
      */
     public function getPackageFilePath($dir)
     {
-        return $dir .'/'. $this->getPackageFileName();
+        return $dir.'/'.$this->getPackageFileName();
     }
 
     /**
@@ -115,6 +113,6 @@ class PathResolver
      */
     public function getModuleDir($module)
     {
-        return $this->getModulesDir() .'/'. $module;
+        return $this->getModulesDir().'/'.$module;
     }
 }

@@ -1,17 +1,15 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Commands;
 
-
+use Mleczek\CBuilder\System\Environment;
 use Mleczek\CBuilder\Compilers\Container;
 use Mleczek\CBuilder\Console\Tools\Factory;
-use Mleczek\CBuilder\Modules\Factory as ModulesFactory;
-use Mleczek\CBuilder\System\Environment;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Mleczek\CBuilder\Modules\Factory as ModulesFactory;
 
 class Build extends Command
 {
@@ -52,7 +50,7 @@ class Build extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -70,13 +68,13 @@ class Build extends Command
     private function registerCompilers()
     {
         $providers = $this->env->config('compilers.providers');
-        foreach($providers as $name => $provider) {
+        foreach ($providers as $name => $provider) {
             $this->compilers->register($name, $provider);
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -91,5 +89,4 @@ class Build extends Command
             ->setCompiler($input->getOption('compiler'))
             ->build();
     }
-
 }

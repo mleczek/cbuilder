@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Versions;
-
 
 use Composer\Semver\Semver;
 use Composer\Semver\Comparator as ComposerComparator;
@@ -107,7 +105,8 @@ class Comparator
      */
     public function satisfiedBy($versions, $constraint)
     {
-        $versions = (array)$versions;
+        $versions = (array) $versions;
+
         return Semver::satisfiedBy($versions, $constraint);
     }
 

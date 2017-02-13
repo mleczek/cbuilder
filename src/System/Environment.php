@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\System;
-
 
 /**
  * Environment variables, including config
@@ -35,9 +33,9 @@ class Environment
         $keys = explode('.', $key);
         $filename = array_shift($keys);
 
-        $result = require $this->configDir . '/' . $filename .'.php';
-        foreach($keys as $k) {
-            if(!isset($result[$k])) {
+        $result = require $this->configDir.'/'.$filename.'.php';
+        foreach ($keys as $k) {
+            if (! isset($result[$k])) {
                 throw new \InvalidArgumentException("Cannot find config value for the '$key' key.");
             }
 

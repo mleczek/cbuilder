@@ -6,7 +6,7 @@
 
 Phar::mapPhar();
 
-$basePath = 'phar://' . __FILE__ . '/';
-require $basePath . 'bin/kernel.php';
+$basePath = 'phar://'.__FILE__.'/';
+require $basePath.'bin/kernel.php';
 
 __HALT_COMPILER();

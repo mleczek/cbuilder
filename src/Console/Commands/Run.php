@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Commands;
 
-
-use Mleczek\CBuilder\Console\Tools\PathResolver;
 use Mleczek\CBuilder\Modules\Package;
 use Symfony\Component\Console\Command\Command;
+use Mleczek\CBuilder\Console\Tools\PathResolver;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,7 +34,7 @@ class Run extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -46,16 +44,16 @@ class Run extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if(!is_null($input->getArgument('script'))) {
+        if (! is_null($input->getArgument('script'))) {
             // TODO: ...
             return $output->write("Script '{$input->getArgument('script')}' not found. Define script in cbuilder.json in 'scripts' section.");
         }
 
-        if($this->package->getType() !== 'project') {
+        if ($this->package->getType() !== 'project') {
             return $output->write("Cannot run library package. Propably you'd like to specify script name from 'scripts' section in cbuilder.json.");
         }
 

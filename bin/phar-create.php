@@ -1,7 +1,7 @@
 <?php
 
 // Load phar config file
-$config = (object)(require __DIR__ .'/../config/phar.php');
+$config = (object) (require __DIR__.'/../config/phar.php');
 
 // Archive project directory as phar file
 $archive = new Phar($config->output);
