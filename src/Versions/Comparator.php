@@ -5,6 +5,7 @@ namespace Mleczek\CBuilder\Versions;
 
 
 use Composer\Semver\Semver;
+use Composer\Semver\Comparator as ComposerComparator;
 
 /**
  * Helper class to operate on the semantic versions.
@@ -22,7 +23,7 @@ class Comparator
      */
     public function greaterThan($v1, $v2)
     {
-        return Comparator::greaterThan($v1, $v2);
+        return ComposerComparator::greaterThan($v1, $v2);
     }
 
     /**
@@ -34,7 +35,7 @@ class Comparator
      */
     public function greaterThanOrEqualTo($v1, $v2)
     {
-        return Comparator::greaterThanOrEqualTo($v1, $v2);
+        return ComposerComparator::greaterThanOrEqualTo($v1, $v2);
     }
 
     /**
@@ -46,7 +47,7 @@ class Comparator
      */
     public function lessThan($v1, $v2)
     {
-        return Comparator::lessThan($v1, $v2);
+        return ComposerComparator::lessThan($v1, $v2);
     }
 
     /**
@@ -58,7 +59,7 @@ class Comparator
      */
     public function lessThanOrEqualTo($v1, $v2)
     {
-        return Comparator::lessThanOrEqualTo($v1, $v2);
+        return ComposerComparator::lessThanOrEqualTo($v1, $v2);
     }
 
     /**
@@ -70,7 +71,7 @@ class Comparator
      */
     public function equalTo($v1, $v2)
     {
-        return Comparator::equalTo($v1, $v2);
+        return ComposerComparator::equalTo($v1, $v2);
     }
 
     /**
@@ -82,7 +83,7 @@ class Comparator
      */
     public function notEqualTo($v1, $v2)
     {
-        return Comparator::notEqualTo($v1, $v2);
+        return ComposerComparator::notEqualTo($v1, $v2);
     }
 
     /**
