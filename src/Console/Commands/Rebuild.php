@@ -1,19 +1,17 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Commands;
-
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Rebuild extends Command
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -24,7 +22,7 @@ class Rebuild extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -41,6 +39,7 @@ class Rebuild extends Command
     {
         $command = $this->getApplication()->find('clean');
         $cmdArgs = new ArrayInput($input->getArguments());
+
         return $command->run($cmdArgs, $output);
     }
 
@@ -53,6 +52,7 @@ class Rebuild extends Command
     {
         $command = $this->getApplication()->find('build');
         $cmdArgs = new ArrayInput($input->getArguments());
+
         return $command->run($cmdArgs, $output);
     }
 }

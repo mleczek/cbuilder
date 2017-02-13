@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Commands;
-
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Init extends Command
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -20,7 +18,7 @@ class Init extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Compilers\Providers;
-
 
 use Mleczek\CBuilder\Compilers\Compiler;
 
@@ -60,7 +58,8 @@ abstract class BaseCompiler implements Compiler
      */
     public function setSourceFiles($files)
     {
-        $this->sourceFiles = (array)$files;
+        $this->sourceFiles = (array) $files;
+
         return $this;
     }
 
@@ -71,11 +70,12 @@ abstract class BaseCompiler implements Compiler
     public function saveOutputAs($filePath)
     {
         $dir = dirname($filePath);
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             throw new \InvalidArgumentException("Directory '$dir' not exists.");
         }
 
         $this->outputPath = $filePath;
+
         return $this;
     }
 
@@ -86,6 +86,7 @@ abstract class BaseCompiler implements Compiler
     public function setArchitecture($arch)
     {
         $this->architecture = $arch;
+
         return $this;
     }
 
@@ -96,6 +97,7 @@ abstract class BaseCompiler implements Compiler
     public function withDebugSymbols($enabled = true)
     {
         $this->debugSymbols = $enabled;
+
         return $this;
     }
 
@@ -106,6 +108,7 @@ abstract class BaseCompiler implements Compiler
     public function withIntermediateFiles($enabled = true)
     {
         $this->intermediateFiles = $enabled;
+
         return $this;
     }
 
@@ -123,6 +126,7 @@ abstract class BaseCompiler implements Compiler
         }
 
         $this->defines[$name] = $value;
+
         return $this;
     }
 

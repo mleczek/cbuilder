@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Modules;
 
 use DI\Container;
@@ -26,7 +25,7 @@ class Factory
      */
     public function make($module = null)
     {
-        if(is_null($module)) {
+        if (is_null($module)) {
             return $this->container->make(Package::class);
         }
 

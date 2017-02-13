@@ -1,14 +1,12 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Commands;
 
-
-use Mleczek\CBuilder\Console\Tools\PathResolver;
 use Mleczek\CBuilder\System\Filesystem;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
+use Mleczek\CBuilder\Console\Tools\PathResolver;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Clean extends Command
@@ -36,7 +34,7 @@ class Clean extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -47,7 +45,7 @@ class Clean extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

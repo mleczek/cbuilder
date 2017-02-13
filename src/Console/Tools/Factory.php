@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Console\Tools;
-
 
 use DI\Container;
 use Mleczek\CBuilder\Modules\Package;

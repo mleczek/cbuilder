@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Modules;
 
+use Mleczek\CBuilder\System\Filesystem;
 use Mleczek\CBuilder\Modules\Exceptions\InvalidPackageFileException;
 use Mleczek\CBuilder\Modules\Exceptions\PackageFileNotFoundException;
-use Mleczek\CBuilder\System\Filesystem;
-
 
 /**
  * The package file information.
@@ -69,7 +67,7 @@ class Package
 
         // Check if json match the schema
         $this->dir = dirname($filePath);
-        if(!$this->factory->makeValidator($this->dir)->isValid()) {
+        if (! $this->factory->makeValidator($this->dir)->isValid()) {
             throw new InvalidPackageFileException("The '{$this->dir}' package is corrupted.");
         }
 
@@ -84,8 +82,8 @@ class Package
     private function get($key, $default = null)
     {
         $result = $this->json;
-        foreach(explode('.', $key) as $k) {
-            if(!isset($result->{$k})) {
+        foreach (explode('.', $key) as $k) {
+            if (! isset($result->{$k})) {
                 return $default;
             }
 
@@ -138,7 +136,8 @@ class Package
         $ext = implode('|', (array) $ext);
         $pattern = "/^.*\\.($ext)$/u";
 
-        $dir = $this->getDir() .'/'. $this->getIncludeDir();
+        $dir = $this->getDir().'/'.$this->getIncludeDir();
+
         return $this->filesystem->walk($dir, $pattern);
     }
 
@@ -159,7 +158,8 @@ class Package
         $ext = implode('|', (array) $ext);
         $pattern = "/^.*\\.($ext)$/u";
 
-        $dir = $this->getDir() .'/'. $this->getSourceDir();
+        $dir = $this->getDir().'/'.$this->getSourceDir();
+
         return $this->filesystem->walk($dir, $pattern);
     }
 

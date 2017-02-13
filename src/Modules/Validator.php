@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Modules;
 
 use JsonSchema\Validator as SchemaValidator;
 use Mleczek\CBuilder\Console\Tools\PathResolver;
-
 
 /**
  * Check module correctness.
@@ -56,8 +54,8 @@ class Validator
      */
     public function isPackageFileValid()
     {
-        $package = $this->dir . '/' . $this->path->getPackageFileName();
-        $schema = PROJECT_DIR . '/resources/package.schema.json';
+        $package = $this->dir.'/'.$this->path->getPackageFileName();
+        $schema = PROJECT_DIR.'/resources/package.schema.json';
 
         $this->schema->check(
             json_decode(file_get_contents($package)),

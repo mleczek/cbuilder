@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Tests\Schema\Package;
-
 
 use JsonSchema\Validator;
 use Mleczek\CBuilder\Tests\TestCase;
@@ -15,11 +13,11 @@ class NameTest extends TestCase
      * Path to the json containing schema
      * to validate package json file.
      */
-    const SCHEMA_PATH = self::PROJECT_DIR . '/resources/package.schema.json';
+    const SCHEMA_PATH = self::PROJECT_DIR.'/resources/package.schema.json';
 
     /**
      * Each row contains:
-     * <dataSetName> => [<value>, <isValid>],
+     * <dataSetName> => [<value>, <isValid>],.
      *
      * @return array
      */
@@ -30,7 +28,7 @@ class NameTest extends TestCase
             'number' => [5.28, false],
             'null' => [null, false],
             'bool' => [false, false],
-            'object' => [(object)[], false],
+            'object' => [(object) [], false],
             'one part #1' => ['org', false],
             'one part #2' => ['package', false],
             'common' => ['org/package', true],
@@ -77,7 +75,7 @@ class NameTest extends TestCase
      */
     public function testValues($name, $isValid)
     {
-        $json = (object)[self::KEY_NAME => $name];
+        $json = (object) [self::KEY_NAME => $name];
         $schema = json_decode(file_get_contents(self::SCHEMA_PATH));
 
         $this->validator->check($json, $schema);

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\System;
-
 
 /**
  * Helper class to operate on the local file system.
@@ -20,29 +18,28 @@ class Filesystem
     public function walk($dir, $pattern = '.*', $nested = true)
     {
         // Check if provided valid dir path
-        if(!is_dir($dir)) {
+        if (! is_dir($dir)) {
             return [];
         }
 
         $results = [];
         $files = scandir($dir, SCANDIR_SORT_NONE);
-        foreach($files as $f) {
+        foreach ($files as $f) {
             $path = "$dir/$f";
 
             // Skip current and parent dir pointers
-            if($f == '.' || $f == '..') {
+            if ($f == '.' || $f == '..') {
                 continue;
             }
 
             // Search subdirectories if enabled
-            if(is_dir($path) && $nested) {
+            if (is_dir($path) && $nested) {
                 $subResults = $this->walk($path, $pattern, $nested);
                 $results = array_merge($results, $subResults);
             }
 
-
             // Add file to results if match pattern
-            if(is_file($path) && preg_match($pattern, $f) == 1) {
+            if (is_file($path) && preg_match($pattern, $f) == 1) {
                 $results[] = $path;
             }
         }
@@ -60,17 +57,17 @@ class Filesystem
     public function remove($path)
     {
         // Remove file and stop
-        if(!is_dir($path)) {
+        if (! is_dir($path)) {
             return unlink($path);
         }
 
         // To remove directory it must be empty
-        foreach(scandir($path) as $item) {
-            if($item == '.' || $item == '..') {
+        foreach (scandir($path) as $item) {
+            if ($item == '.' || $item == '..') {
                 continue;
             }
 
-            $this->remove($path .'/'. $item);
+            $this->remove($path.'/'.$item);
         }
 
         return rmdir($path);
@@ -86,13 +83,13 @@ class Filesystem
     public function makeDir($path, $mode = 0777)
     {
         // Skip if directory exists
-        if(is_dir($path)) {
+        if (is_dir($path)) {
             return true;
         }
 
         // Error, cannot create dir
         // (file exists with given name)
-        if(is_file($path)) {
+        if (is_file($path)) {
             return false;
         }
 

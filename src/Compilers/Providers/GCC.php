@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mleczek\CBuilder\Compilers\Providers;
-
 
 use Mleczek\CBuilder\Compilers\Compiler;
 use Mleczek\CBuilder\Compilers\Exceptions\CompilerNotFoundException;
@@ -71,11 +69,12 @@ class GCC extends BaseCompiler
     public function setArchitecture($arch)
     {
         $available = array_keys(self::ARCHITECTURE_OPTIONS);
-        if (!in_array($arch, $available)) {
+        if (! in_array($arch, $available)) {
             throw new \InvalidArgumentException("Architecture '$arch' isn't supported.");
         }
 
         parent::setArchitecture($arch);
+
         return $this;
     }
 
@@ -101,7 +100,7 @@ class GCC extends BaseCompiler
      */
     public function makeLibrary($static = false)
     {
-        $objOutput = $this->outputPath .'.o';
+        $objOutput = $this->outputPath.'.o';
 
         // Object file
         $this->run('gcc',
@@ -116,8 +115,11 @@ class GCC extends BaseCompiler
         );
 
         // Library file
-        if($static) $this->objToStaticLib($objOutput);
-        else $this->objToSharedLib($objOutput);
+        if ($static) {
+            $this->objToStaticLib($objOutput);
+        } else {
+            $this->objToSharedLib($objOutput);
+        }
 
         return $this;
     }
