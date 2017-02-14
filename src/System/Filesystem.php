@@ -48,8 +48,10 @@ class Filesystem
     }
 
     /**
-     * Remove file or directory
-     * (works with non-empty dirs).
+     * Remove file or directory (works with non-empty dirs).
+     *
+     * Directories symbolic links are removed without
+     * removing any of the original files and directories.
      *
      * @param string $path
      * @return bool True on success, false otherwise.
@@ -62,12 +64,14 @@ class Filesystem
         }
 
         // To remove directory it must be empty
-        foreach (scandir($path) as $item) {
-            if ($item == '.' || $item == '..') {
-                continue;
-            }
+        if(!is_link($path)) {
+            foreach (scandir($path) as $item) {
+                if ($item == '.' || $item == '..') {
+                    continue;
+                }
 
-            $this->remove($path.'/'.$item);
+                $this->remove($path . '/' . $item);
+            }
         }
 
         return rmdir($path);

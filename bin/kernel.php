@@ -17,6 +17,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 // DI Container
 $builder = new DI\ContainerBuilder();
+$builder->addDefinitions(PROJECT_DIR.'/config/container.php');
 $container = $builder->build();
 
 // Environment Variables
