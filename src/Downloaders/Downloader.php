@@ -3,7 +3,6 @@
 
 namespace Mleczek\CBuilder\Downloaders;
 
-
 use Closure;
 
 interface Downloader

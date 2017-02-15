@@ -64,7 +64,7 @@ class Filesystem
         }
 
         // To remove directory it must be empty
-        if(!is_link($path)) {
+        if (!is_link($path)) {
             foreach (scandir($path) as $item) {
                 if ($item == '.' || $item == '..') {
                     continue;

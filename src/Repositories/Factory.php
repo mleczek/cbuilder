@@ -3,7 +3,6 @@
 
 namespace Mleczek\CBuilder\Repositories;
 
-
 use DI\Container as DIContainer;
 use Mleczek\CBuilder\Repositories\Providers\LocalRepository;
 
