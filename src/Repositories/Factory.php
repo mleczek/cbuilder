@@ -4,20 +4,20 @@
 namespace Mleczek\CBuilder\Repositories;
 
 
-use DI\Container;
+use DI\Container as DIContainer;
 use Mleczek\CBuilder\Repositories\Providers\LocalRepository;
 
 class Factory
 {
     /**
-     * @var Container
+     * @var DIContainer
      */
     private $container;
 
     /**
-     * @param Container $container
+     * @param DIContainer $container
      */
-    public function __construct(Container $container)
+    public function __construct(DIContainer $container)
     {
         $this->container = $container;
     }
