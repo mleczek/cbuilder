@@ -3,7 +3,6 @@
 
 namespace Mleczek\CBuilder\Repositories;
 
-
 use Mleczek\CBuilder\Repositories\Exceptions\RepositoryNotFoundException;
 
 class Container
@@ -53,13 +52,13 @@ class Container
     public function find($package)
     {
         // Search in repositories from the highest to the lowest priority
-        for($i = self::HIGHEST_PRIORITY; $i <= self::LOWEST_PRIORITY; ++$i) {
+        for ($i = self::HIGHEST_PRIORITY; $i <= self::LOWEST_PRIORITY; ++$i) {
             // If any repository with given priority exists...
-            if(isset($this->repositories[$i])) {
+            if (isset($this->repositories[$i])) {
                 // Iterate over the collection of them...
-                foreach($this->repositories[$i] as $repo) {
+                foreach ($this->repositories[$i] as $repo) {
                     // And return repository if contains the package
-                    if($repo->has($package)) {
+                    if ($repo->has($package)) {
                         return $repo;
                     }
                 }

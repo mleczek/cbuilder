@@ -3,7 +3,6 @@
 
 namespace Mleczek\CBuilder\Versions\Providers;
 
-
 use Mleczek\CBuilder\Versions\Comparator;
 use Mleczek\CBuilder\Versions\VersionsProvider;
 

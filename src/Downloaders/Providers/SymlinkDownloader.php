@@ -3,7 +3,6 @@
 
 namespace Mleczek\CBuilder\Downloaders\Providers;
 
-
 use Closure;
 use Mleczek\CBuilder\Downloaders\Downloader;
 use Mleczek\CBuilder\System\Filesystem;
@@ -39,7 +38,7 @@ class SymlinkDownloader implements Downloader
      */
     public function from($src)
     {
-        if(!is_dir($src)) {
+        if (!is_dir($src)) {
             throw new \InvalidArgumentException("The `$src` directory cannot be found.");
         }
 
@@ -66,7 +65,7 @@ class SymlinkDownloader implements Downloader
      */
     public function download(Closure $progress = null)
     {
-        if(is_null($this->src) || is_null($this->dest)) {
+        if (is_null($this->src) || is_null($this->dest)) {
             throw new \LogicException("Before downloading specify the source via 'from' method and destination via 'to' method.");
         }
 
@@ -75,7 +74,7 @@ class SymlinkDownloader implements Downloader
         $isDone = symlink($this->src, $this->dest);
 
         // Report status/progress
-        if(!is_null($progress)) {
+        if (!is_null($progress)) {
             $progress->call($this, [$isDone ? 100 : -1]);
         }
 

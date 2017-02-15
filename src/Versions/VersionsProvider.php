@@ -3,7 +3,6 @@
 
 namespace Mleczek\CBuilder\Versions;
 
-
 interface VersionsProvider
 {
     /**
