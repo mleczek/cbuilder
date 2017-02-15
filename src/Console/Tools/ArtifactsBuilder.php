@@ -174,7 +174,7 @@ class ArtifactsBuilder
                 ->withIntermediateFiles($this->debugMode);
 
             $path = $this->path->getOutputDir($arch);
-            $this->filesystem->makeDir($path);
+            $this->filesystem->touchDir($path);
 
             if ($this->package->getType() == 'library') {
                 $path = $this->path->getLibraryPath($this->package, $arch, true);

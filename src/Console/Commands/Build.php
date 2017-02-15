@@ -2,8 +2,7 @@
 
 namespace Mleczek\CBuilder\Console\Commands;
 
-use Mleczek\CBuilder\System\Environment;
-use Mleczek\CBuilder\Compilers\Container;
+use Mleczek\CBuilder\Console\Tools\CompilersService;
 use Mleczek\CBuilder\Console\Tools\Factory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,28 +23,21 @@ class Build extends Command
     private $packages;
 
     /**
-     * @var Environment
-     */
-    private $env;
-
-    /**
-     * @var Container
+     * @var CompilersService
      */
     private $compilers;
 
     /**
      * @param Factory $tools
      * @param ModulesFactory $packages
-     * @param Environment $env
      * @param $compilers
      */
-    public function __construct(Factory $tools, ModulesFactory $packages, Environment $env, Container $compilers)
+    public function __construct(Factory $tools, ModulesFactory $packages, CompilersService $compilers)
     {
         parent::__construct();
 
         $this->tools = $tools;
         $this->packages = $packages;
-        $this->env = $env;
         $this->compilers = $compilers;
     }
 
@@ -63,22 +55,11 @@ class Build extends Command
     }
 
     /**
-     * Register all compilers.
-     */
-    private function registerCompilers()
-    {
-        $providers = $this->env->config('compilers.providers');
-        foreach ($providers as $name => $provider) {
-            $this->compilers->register($name, $provider);
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->registerCompilers();
+        $this->compilers->registerCompilers();
 
         // TODO: Select package...
         $package = $this->packages->make();

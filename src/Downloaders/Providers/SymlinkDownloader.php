@@ -70,7 +70,7 @@ class SymlinkDownloader implements Downloader
         }
 
         // Create symlink
-        $this->fs->makeDir($this->dest);
+        $this->fs->touchDir($this->dest);
         $isDone = symlink($this->src, $this->dest);
 
         // Report status/progress

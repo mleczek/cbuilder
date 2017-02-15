@@ -84,7 +84,7 @@ class Filesystem
      * @param int $mode
      * @return bool True on success, false otherwise.
      */
-    public function makeDir($path, $mode = 0777)
+    public function touchDir($path, $mode = 0777)
     {
         // Skip if directory exists
         if (is_dir($path)) {
