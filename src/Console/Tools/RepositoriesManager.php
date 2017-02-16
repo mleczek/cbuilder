@@ -35,7 +35,7 @@ class RepositoriesManager
     public function getDefault()
     {
         static $container = null;
-        if(is_null($container)) {
+        if (is_null($container)) {
             $container = $this->factory->makeContainer();
         }
 
@@ -50,7 +50,7 @@ class RepositoriesManager
      */
     public function get($package)
     {
-        if(!isset($this->containers[$package])) {
+        if (!isset($this->containers[$package])) {
             $this->containers[$package] = $this->factory->makeContainer();
         }
 

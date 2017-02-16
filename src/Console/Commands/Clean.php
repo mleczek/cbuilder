@@ -39,9 +39,7 @@ class Clean extends Command
     protected function configure()
     {
         $this->setName('clean')
-            ->setDescription('Remove output of the build command.')
-            ->addOption('module', 'm', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Clean output of the specified module.')
-            ->addOption('nested', null, InputOption::VALUE_NONE, 'Perform operation also for all package dependencies.');
+            ->setDescription('Remove output of the build command.');
     }
 
     /**
@@ -49,8 +47,6 @@ class Clean extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // TODO: select package, nested cleaning...
-
         $this->fs->remove($this->path->getOutputDir());
     }
 }

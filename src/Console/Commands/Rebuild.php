@@ -16,9 +16,7 @@ class Rebuild extends Command
     protected function configure()
     {
         $this->setName('rebuild')
-            ->setDescription('Clean and build package (excluding dependencies).')
-            ->addOption('module', 'm', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Rebuild specified module.')
-            ->addOption('nested', null, InputOption::VALUE_NONE, 'Perform operation also for all package dependencies.');
+            ->setDescription('Clean and build package (excluding dependencies).');
     }
 
     /**

@@ -47,11 +47,10 @@ class Build extends Command
     protected function configure()
     {
         $this->setName('build')
-            ->setDescription('Build package including required dependencies.')
+            ->setDescription('Build current package.')
             ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Generate debug symbols and intermediate files.')
             ->addOption('compiler', null, InputOption::VALUE_REQUIRED, 'Build package using specified compiler.')
-            ->addOption('arch', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Compile only for specified architectures.', [])
-            ->addOption('module', 'm', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Build only specified module and linked dependencies.');
+            ->addOption('arch', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Compile only for specified architectures.', []);
     }
 
     /**
@@ -61,9 +60,9 @@ class Build extends Command
     {
         $this->compilers->registerCompilers();
 
-        // TODO: Select package...
-        $package = $this->packages->make();
+        // TODO: Check if all dependencies are installed
 
+        $package = $this->packages->make();
         $this->tools->makeArtifactsBuilder($package)
             ->useDebugMode($input->getOption('debug'))
             ->setArchitectures($input->getOption('arch'))
