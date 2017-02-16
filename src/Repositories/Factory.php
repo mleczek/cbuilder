@@ -29,4 +29,15 @@ class Factory
     {
         return $this->container->make(LocalRepository::class, [$dir]);
     }
+
+    /**
+     * Get new repository container.
+     * Each module must have own container.
+     *
+     * @return Container
+     */
+    public function makeContainer()
+    {
+        return $this->container->make(Container::class);
+    }
 }

@@ -42,7 +42,7 @@
     "repository": [
         {
             "type": "file",
-            "url": "path/to/repo"
+            "src": "path/to/repo"
         }
     ]
 }

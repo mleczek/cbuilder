@@ -31,6 +31,7 @@ class Container
     /**
      * @param Repository $repository
      * @param int $priority In range [HIGHEST_PRIORITY, LOWEST_PRIORITY].
+     * @throws \InvalidArgumentException
      */
     public function register(Repository $repository, $priority)
     {
