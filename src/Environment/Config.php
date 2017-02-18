@@ -40,7 +40,7 @@ class Config
      */
     public function setDir($dir)
     {
-        if(!$this->fs->existsDir($dir)) {
+        if (!$this->fs->existsDir($dir)) {
             throw new InvalidPathException("Cannot set config root directory, the '$dir' directory not exists.");
         }
 
@@ -61,14 +61,14 @@ class Config
 
         // Check whether config file exists.
         $file = $this->fs->path($this->dir, $filename);
-        if(!$this->fs->existsFile($file)) {
+        if (!$this->fs->existsFile($file)) {
             return false;
         }
 
         // Find config value using dot notation.
         $result = $this->fs->readFile($file);
-        foreach($parts as $part) {
-            if(!isset($result[$part])) {
+        foreach ($parts as $part) {
+            if (!isset($result[$part])) {
                 return false;
             }
 
@@ -97,8 +97,8 @@ class Config
         $result = $this->fs->readFile($file);
 
         // Find config value using dot notation.
-        foreach($parts as $part) {
-            if(!isset($result[$part])) {
+        foreach ($parts as $part) {
+            if (!isset($result[$part])) {
                 throw new ConfigNotExistsException("Cannot find the '$part' part of a '$key' config key.");
             }
 
