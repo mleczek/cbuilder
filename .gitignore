@@ -1,2 +1,5 @@
 vendor/
+coverage/
+temp/
+
 bin/cbuilder.phar

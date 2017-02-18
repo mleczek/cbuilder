@@ -1,7 +1,5 @@
 <?php
 
-const PROJECT_DIR = __DIR__.'/..';
-
 // Check CWD (Current Working Directory)
 if (! file_exists('cbuilder.json')) {
     echo "Working directory is not recognized as the cbuilder package, check path or create new package using 'cbuilder init' command.";
