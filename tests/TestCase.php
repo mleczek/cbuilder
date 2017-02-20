@@ -14,8 +14,8 @@ class TestCase extends BaseTestCase
      */
     public static function setUpBeforeClass()
     {
-        self::assertFileNotExists('temp');
-        self::assertDirectoryNotExists('temp');
+        self::assertFileNotExists(self::ROOT_DIR .'/temp');
+        self::assertDirectoryNotExists(self::ROOT_DIR .'/temp');
     }
 
     /**
