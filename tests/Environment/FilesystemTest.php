@@ -3,6 +3,7 @@
 namespace Mleczek\CBuilder\Tests\Environment;
 
 use Mleczek\CBuilder\Environment\Exceptions\InvalidPathException;
+use Mleczek\CBuilder\Environment\Exceptions\UnknownException;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Tests\TestCase;
 
@@ -49,16 +50,16 @@ class FilesystemTest extends TestCase
 
     public function testTouchDir()
     {
-        $this->assertFalse(file_exists('temp'));
+        $this->assertFileNotExists('temp');
         $this->fs->touchDir('temp/lorem');
-        $this->assertTrue(is_dir('temp/lorem'));
+        $this->assertDirectoryExists('temp/lorem');
     }
 
     public function testTouchExistingDir()
     {
         $this->fs->touchDir('temp/lorem');
         $this->fs->touchDir('temp/lorem');
-        $this->assertTrue(is_dir('temp/lorem'));
+        $this->assertDirectoryExists('temp/lorem');
     }
 
     public function testTouchFileAsDir()
@@ -70,16 +71,16 @@ class FilesystemTest extends TestCase
 
     public function testTouchFile()
     {
-        $this->assertFalse(file_exists('temp'));
+        $this->assertDirectoryNotExists('temp');
         $this->fs->touchFile('temp/lorem/lipsum.txt');
-        $this->assertTrue(is_file('temp/lorem/lipsum.txt'));
+        $this->assertFileExists('temp/lorem/lipsum.txt');
     }
 
     public function testTouchExistingFile()
     {
         $this->fs->touchFile('temp/lorem/lipsum.txt');
         $this->fs->touchFile('temp/lorem/lipsum.txt');
-        $this->assertTrue(is_file('temp/lorem/lipsum.txt'));
+        $this->assertFileExists('temp/lorem/lipsum.txt');
     }
 
     public function testTouchDirAsFile()
@@ -87,6 +88,18 @@ class FilesystemTest extends TestCase
         $this->expectException(InvalidPathException::class);
         $this->fs->touchDir('temp/lorem');
         $this->fs->touchFile('temp/lorem');
+    }
+
+    public function testTouchInvalidFileName()
+    {
+        $this->expectException(UnknownException::class);
+        $this->fs->touchFile('temp/!@#$%^&*()_+');
+    }
+
+    public function testTouchInvalidDirName()
+    {
+        $this->expectException(UnknownException::class);
+        $this->fs->touchDir('temp/!@#$%^&*()_+');
     }
 
     public function testIsFile()
@@ -120,15 +133,15 @@ class FilesystemTest extends TestCase
     public function testRemoveFile()
     {
         $this->fs->touchFile('temp/lorem/lipsum.txt');
-        $this->assertTrue(is_file('temp/lorem/lipsum.txt'));
+        $this->assertFileExists('temp/lorem/lipsum.txt');
         $this->fs->removeFile('temp/lorem/lipsum.txt');
-        $this->assertFalse(is_file('temp/lorem/lipsum.txt'));
+        $this->assertFileNotExists('temp/lorem/lipsum.txt');
     }
 
     public function testRemoveDirAsFile()
     {
         $this->fs->touchDir('temp/lorem');
-        $this->assertTrue(is_dir('temp/lorem'));
+        $this->assertDirectoryExists('temp/lorem');
 
         $this->expectException(InvalidPathException::class);
         $this->fs->removeFile('temp/lorem');
@@ -136,29 +149,29 @@ class FilesystemTest extends TestCase
 
     public function testRemoveNonExistingFile()
     {
-        $this->assertFalse(is_file('temp/lorem/lipsum.txt'));
+        $this->assertFileNotExists('temp/lorem/lipsum.txt');
         $this->fs->removeFile('temp/lorem/lipsum.txt');
     }
 
     public function testRemoveDir()
     {
         $this->fs->touchDir('temp/lorem/lipsum');
-        $this->assertTrue(is_dir('temp/lorem/lipsum'));
+        $this->assertDirectoryExists('temp/lorem/lipsum');
         $this->fs->removeDir('temp/lorem/lipsum');
-        $this->assertFalse(is_dir('temp/lorem/lipsum'));
-        $this->assertTrue(is_dir('temp/lorem'));
+        $this->assertDirectoryNotExists('temp/lorem/lipsum');
+        $this->assertDirectoryExists('temp/lorem');
     }
 
     public function testRemoveNonExistingDir()
     {
-        $this->assertFalse(is_dir('temp/lorem/lipsum'));
+        $this->assertDirectoryNotExists('temp/lorem/lipsum');
         $this->fs->removeDir('temp/lorem/lipsum');
     }
 
     public function testRemoveFileAsDir()
     {
         $this->fs->touchFile('temp/lorem');
-        $this->assertTrue(is_file('temp/lorem'));
+        $this->assertFileExists('temp/lorem');
 
         $this->expectException(InvalidPathException::class);
         $this->fs->removeDir('temp/lorem');
@@ -167,14 +180,14 @@ class FilesystemTest extends TestCase
     public function testRemovePath()
     {
         $this->fs->touchFile('temp/lorem');
-        $this->assertTrue(is_file('temp/lorem'));
+        $this->assertFileExists('temp/lorem');
         $this->fs->removePath('temp/lorem');
-        $this->assertFalse(is_file('temp/lorem'));
+        $this->assertFileNotExists('temp/lorem');
 
         $this->fs->touchDir('temp/lorem');
-        $this->assertTrue(is_dir('temp/lorem'));
+        $this->assertFileExists('temp/lorem');
         $this->fs->removePath('temp/lorem');
-        $this->assertFalse(is_dir('temp/lorem'));
+        $this->assertDirectoryNotExists('temp/lorem');
     }
 
     public function testWriteFile()
@@ -182,7 +195,7 @@ class FilesystemTest extends TestCase
         $path = 'temp/lorem';
         $content = 'lorem lipsum dolor...';
 
-        $this->assertFalse(is_file('temp/lorem'));
+        $this->assertFileNotExists('temp/lorem');
         $this->fs->writeFile($path, $content);
         $this->assertEquals($content, file_get_contents($path));
     }
@@ -249,11 +262,18 @@ class FilesystemTest extends TestCase
         $this->fs->listFiles('temp');
     }
 
-    /**
-     * Called after each test is executed.
-     */
-    protected function tearDown()
+    public function testRemoveUsedFile()
     {
-        $this->fs->removeDir(self::ROOT_DIR . '/temp');
+        $this->fs->touchFile('temp/file');
+
+        $file = fopen('temp/file', 'r');
+        flock($file, LOCK_EX);
+
+        $this->expectException(UnknownException::class);
+        $this->fs->removeFile('temp/file');
+        $this->assertFileExists('temp/file');
+
+        flock($file, LOCK_UN);
+        fclose($file);
     }
 }

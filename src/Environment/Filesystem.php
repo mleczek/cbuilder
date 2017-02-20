@@ -2,6 +2,7 @@
 
 namespace Mleczek\CBuilder\Environment;
 
+use Exception;
 use Mleczek\CBuilder\Environment\Exceptions\InvalidPathException;
 use Mleczek\CBuilder\Environment\Exceptions\UnknownException;
 
@@ -103,9 +104,11 @@ class Filesystem
             // php 'touch' function do not create dirs.
             $this->touchDir(dirname($file));
 
-            if (!touch($file)) {
+            try {
+                touch($file);
+            } catch (Exception $e) {
                 $scriptOwner = get_current_user();
-                throw new UnknownException("Cannot create '$file' file, please check permission for the '$scriptOwner' user.");
+                throw new UnknownException("Cannot create '$file' file. Please check if file name is valid and the '$scriptOwner' user have appropriate permissions.");
             }
         }
     }
@@ -137,9 +140,11 @@ class Filesystem
 
         // Create directory if not exists.
         if (!$this->existsDir($dir)) {
-            if (!mkdir($dir, 0777, true)) {
+            try {
+                mkdir($dir, 0777, true);
+            } catch (Exception $e) {
                 $scriptOwner = get_current_user();
-                throw new UnknownException("Cannot create '$dir' directory, please check permissions for the '$scriptOwner' user.");
+                throw new UnknownException("Cannot create '$dir' directory. Please check if dir name is valid and the '$scriptOwner' user have appropriate permissions.");
             }
         }
     }
@@ -241,9 +246,11 @@ class Filesystem
         }
 
         // Remove file.
-        if (!unlink($file)) {
+        try {
+            unlink($file);
+        } catch (Exception $e) {
             $scriptOwner = get_current_user();
-            throw new UnknownException("Cannot remove '$file' file, please check permissions for the '$scriptOwner' user.");
+            throw new UnknownException("Cannot remove '$file' file. Please check if other programs don't use this file and the '$scriptOwner' user have appropriate permissions.");
         }
     }
 
@@ -281,9 +288,11 @@ class Filesystem
         }
 
         // Remove directory.
-        if (!rmdir($dir)) {
+        try {
+            rmdir($dir);
+        } catch (Exception $e) {
             $scriptOwner = get_current_user();
-            throw new UnknownException("Cannot remove '$dir' directory, please check permissions for the '$scriptOwner' user.");
+            throw new UnknownException("Cannot remove '$dir' directory. Please check if the '$scriptOwner' user have appropriate permissions.");
         }
     }
 }
