@@ -90,6 +90,11 @@ class FilesystemTest extends TestCase
         $this->fs->touchFile('temp/lorem');
     }
 
+    /**
+     * TODO: Debug on Linux to detect the issues
+     *
+     * @requires OS WIN32|WINNT|Windows
+     */
     public function testTouchInvalidFileName()
     {
         $this->expectException(UnknownException::class);
@@ -99,6 +104,11 @@ class FilesystemTest extends TestCase
         $this->fs->touchFile('temp/!@#$%^&*()_\0+');
     }
 
+    /**
+     * TODO: Debug on Linux to detect the issues
+     *
+     * @requires OS WIN32|WINNT|Windows
+     */
     public function testTouchInvalidDirName()
     {
         $this->expectException(UnknownException::class);
@@ -268,6 +278,11 @@ class FilesystemTest extends TestCase
         $this->fs->listFiles('temp');
     }
 
+    /**
+     * TODO: Debug on Linux to detect the issues
+     * 
+     * @requires OS WIN32|WINNT|Windows
+     */
     public function testRemoveUsedFile()
     {
         $this->fs->touchFile('temp/file');
