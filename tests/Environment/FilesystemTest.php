@@ -93,12 +93,18 @@ class FilesystemTest extends TestCase
     public function testTouchInvalidFileName()
     {
         $this->expectException(UnknownException::class);
+
+        // The '\0' is an illegal symbol for linux file name
+        // and '*' is an illegal symbol for windows file name.
         $this->fs->touchFile('temp/!@#$%^&*()_\0+');
     }
 
     public function testTouchInvalidDirName()
     {
         $this->expectException(UnknownException::class);
+
+        // The '\0' is an illegal symbol for linux file name
+        // and '*' is an illegal symbol for windows file name.
         $this->fs->touchDir('temp/!@#$%^&*()_\0+');
     }
 
@@ -269,8 +275,13 @@ class FilesystemTest extends TestCase
         $file = fopen('temp/file', 'r');
         flock($file, LOCK_SH);
 
-        $this->expectException(UnknownException::class);
-        $this->fs->removeFile('temp/file');
+        try {
+            $this->fs->removeFile('temp/file');
+            $this->fail();
+        } catch (UnknownException $e) {
+            // Exception should occur
+        }
+
         $this->assertFileExists('temp/file');
 
         flock($file, LOCK_UN);
