@@ -16,7 +16,7 @@
         "dynamic"
     ],
     "dependencies": {
-        "org/package3": "dev-master static",
+        "org/package3": "dev-master:static",
         "org3/package": "~0.5.6"
     },
     "dev-dependencies": {
@@ -36,7 +36,7 @@
             "...",
             "..."
         ],
-        "after-build:windows,x32": "...",
+        "after-build:windows,x86": "...",
         "custom": "..."
     },
     "repository": [

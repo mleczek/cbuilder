@@ -12,6 +12,7 @@ class ParserTest extends TestCase
     public function keyValues()
     {
         return [
+            // <data-set-name> => [<input-string>, <expected-key>, <expected-values>]
             'only key' => ['key', 'key', []],
             'single value' => ['key:value', 'key', ['value']],
             'a few values' => ['key:v1,v2,v3,v4', 'key', ['v1', 'v2', 'v3', 'v4']],

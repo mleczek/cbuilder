@@ -1,16 +1,19 @@
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix="Exception.php">src</directory>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-html" target="coverage"/>
+        <!--<log type="coverage-html" target="coverage"/>-->
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
     </logging>
 </phpunit>

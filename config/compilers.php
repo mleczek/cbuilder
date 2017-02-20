@@ -15,7 +15,7 @@ return [
      * here will be available in build process.
      */
     'providers' => [
-        'gcc' => \Mleczek\CBuilder\Compilers\Providers\GCC::class,
+        // 'gcc' => \Mleczek\CBuilder\Compiler\Providers\GCC::class,
     ],
 
 ];
