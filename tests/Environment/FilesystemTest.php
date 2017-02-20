@@ -93,13 +93,13 @@ class FilesystemTest extends TestCase
     public function testTouchInvalidFileName()
     {
         $this->expectException(UnknownException::class);
-        $this->fs->touchFile('temp/!@#$%^&*()_+');
+        $this->fs->touchFile('temp/!@#$%^&*()_\0+');
     }
 
     public function testTouchInvalidDirName()
     {
         $this->expectException(UnknownException::class);
-        $this->fs->touchDir('temp/!@#$%^&*()_+');
+        $this->fs->touchDir('temp/!@#$%^&*()_\0+');
     }
 
     public function testIsFile()
@@ -267,7 +267,7 @@ class FilesystemTest extends TestCase
         $this->fs->touchFile('temp/file');
 
         $file = fopen('temp/file', 'r');
-        flock($file, LOCK_EX);
+        flock($file, LOCK_SH);
 
         $this->expectException(UnknownException::class);
         $this->fs->removeFile('temp/file');
