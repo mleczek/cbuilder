@@ -25,6 +25,17 @@ class KeyValuesTest extends TestCase
         $this->assertFalse($kv->hasValue('v4'));
     }
 
+    public function testHasAnyValue()
+    {
+        $kv = new KeyValues('', ['v1', 'v2', 'v3']);
+
+        $this->assertTrue($kv->hasAnyValue(['v1', 'v2']));
+        $this->assertTrue($kv->hasAnyValue('vn', 'v2'));
+        $this->assertTrue($kv->hasAnyValue('v3'));
+        $this->assertFalse($kv->hasAnyValue('vm', 'vn'));
+
+    }
+
     public function testGetValues()
     {
         $values = ['v1', 'v2', 'v3'];
