@@ -6,6 +6,7 @@
     "properties": {
         "name": {
             "type": "string",
+            "pattern": "^[a-z0-9-]+/[a-z0-9-]+$",
             "description": "Package name using 'org/name' format."
         },
 
@@ -34,27 +35,51 @@
         },
 
         "platform": {
-            "type": "array",
-            "description": "List of supported platforms. If no platforms are specified then it's assumed that all platforms are supported.",
-            "items": {
-                "type": "string"
-            }
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "Supported platform. If no platform is specified then it's assumed that all platforms are supported."
+                },
+                {
+                    "type": "array",
+                    "description": "List of supported platforms. If no platforms are specified then it's assumed that all platforms are supported.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ]
         },
 
         "arch": {
-            "type": "array",
-            "description": "List of supported architectures. The defaults are 'x86' and 'x64'.",
-            "items": {
-                "type": "string"
-            }
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "Supported architecture. The defaults are 'x86' and 'x64'."
+                },
+                {
+                    "type": "array",
+                    "description": "List of supported architectures. The defaults are 'x86' and 'x64'.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ]
         },
 
         "linking": {
-            "type": "array",
-            "description": "List of supported linking types. By default supports both, the static and dynamic linking.",
-            "items": {
-                "type": "string"
-            }
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "Support only one linking type. By default supports both, the static and dynamic linking."
+                },
+                {
+                    "type": "array",
+                    "description": "List of supported linking types. The defaults are 'static' and 'dynamic'.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            ]
         },
 
         "dependencies": {

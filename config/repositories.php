@@ -9,4 +9,11 @@ return [
         'local' => \Mleczek\CBuilder\Repository\Providers\LocalRepository::class,
     ],
 
+    /*
+     * Default repositories added at the end of the list of package repositories.
+     */
+    'defaults' => [
+        // ...
+    ]
+
 ];

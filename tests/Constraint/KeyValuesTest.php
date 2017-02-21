@@ -33,7 +33,6 @@ class KeyValuesTest extends TestCase
         $this->assertTrue($kv->hasAnyValue('vn', 'v2'));
         $this->assertTrue($kv->hasAnyValue('v3'));
         $this->assertFalse($kv->hasAnyValue('vm', 'vn'));
-
     }
 
     public function testGetValues()

@@ -1,9 +1,6 @@
 <?php
 
-define('CBUILDER_DIR', __DIR__.'/..');
-
-// Composer Dependencies
-require CBUILDER_DIR.'/vendor/autoload.php';
+require __DIR__ . '/bootstrap.php';
 
 // Script Execution Configuration
 set_time_limit(0); // disable timeout
@@ -11,15 +8,15 @@ ini_set('memory_limit', '128M');
 
 // DI Container
 $builder = new DI\ContainerBuilder();
-$builder->addDefinitions(CBUILDER_DIR.'/config/container.php');
+$builder->addDefinitions(CBUILDER_DIR . '/config/container.php');
 $container = $builder->build();
 
 // Environment Variables
 $config = $container->get(\Mleczek\CBuilder\Environment\Config::class);
-$config->setDir(CBUILDER_DIR.'/config');
+$config->setDir(CBUILDER_DIR . '/config');
 
 // Check CWD (Current Working Directory)
-if (! file_exists($config->get('modules.file'))) {
+if (!file_exists($config->get('modules.file'))) {
     echo "Working directory is not recognized as the cbuilder package, check path or create new package using 'cbuilder init' command.";
     exit(-1);
 }

@@ -35,31 +35,31 @@ class KeyValues
     }
 
     /**
+     * @param array|array... $values
+     * @return bool True if contains any of the given values, false otherwise.
+     */
+    public function hasAnyValue($values)
+    {
+        if (!is_array($values)) {
+            $values = func_get_args();
+        }
+
+        foreach ($values as $value) {
+            if ($this->hasValue($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param string $value
      * @return bool
      */
     public function hasValue($value)
     {
         return in_array($value, $this->getValues());
-    }
-
-    /**
-     * @param array|array... $values
-     * @return bool True if contains any of the given values, false otherwise.
-     */
-    public function hasAnyValue($values)
-    {
-        if(!is_array($values)) {
-            $values = func_get_args();
-        }
-
-        foreach($values as $value) {
-            if($this->hasValue($value)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

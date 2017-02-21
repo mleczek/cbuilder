@@ -7,6 +7,6 @@
 Phar::mapPhar();
 
 $basePath = 'phar://'.__FILE__.'/';
-require $basePath.'bin/kernel.php';
+require $basePath.'bin/cbuilder.php';
 
 __HALT_COMPILER();

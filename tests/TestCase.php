@@ -14,8 +14,8 @@ class TestCase extends BaseTestCase
      */
     public static function setUpBeforeClass()
     {
-        self::assertFileNotExists(self::ROOT_DIR .'/temp');
-        self::assertDirectoryNotExists(self::ROOT_DIR .'/temp');
+        self::assertFileNotExists('temp');
+        self::assertDirectoryNotExists('temp');
     }
 
     /**
@@ -24,6 +24,6 @@ class TestCase extends BaseTestCase
     protected function tearDown()
     {
         $fs = new Filesystem();
-        $fs->removePath(self::ROOT_DIR . '/temp');
+        $fs->removePath('temp');
     }
 }
