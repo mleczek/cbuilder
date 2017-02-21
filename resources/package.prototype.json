@@ -6,11 +6,8 @@
     "compiler": {
         "gcc": "^5.0"
     },
-    "platform": "windows",
-    "arch": [
-        "x86",
-        "x64"
-    ],
+    "platform": ["windows"],
+    "arch": ["x86", "x64"],
     "linking": [
         "static",
         "dynamic"
@@ -39,7 +36,7 @@
         "after-build:windows,x86": "...",
         "custom": "..."
     },
-    "repository": [
+    "repositories": [
         {
             "type": "file",
             "src": "path/to/repo"
