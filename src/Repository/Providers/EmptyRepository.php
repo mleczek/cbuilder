@@ -30,22 +30,4 @@ class EmptyRepository implements Repository
     {
         throw new PackageNotFoundException("Cannot find '$package' package in the repository which by definition is without packages.'");
     }
-
-    /**
-     * @param string $src
-     * @throws RepositorySourceNotExistsException
-     */
-    public function setSource($src)
-    {
-        throw new RepositorySourceNotExistsException("The empty repository cannot contain any source by definition.");
-    }
-
-    /**
-     * @return string
-     * @throws RepositorySourceNotExistsException
-     */
-    public function getSource()
-    {
-        throw new RepositorySourceNotExistsException("The empty repository cannot contain any source by definition.");
-    }
 }

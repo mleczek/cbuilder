@@ -76,8 +76,9 @@ class Factory
         }
 
         $namespace = $this->config->get("repositories.$type");
-        $repository = $this->di->make($namespace);
-        $repository->setSource($src);
+        $repository = $this->di->make($namespace, [
+            'src' => $src,
+        ]);
 
         return $repository;
     }
@@ -90,8 +91,9 @@ class Factory
      */
     public function makeLocal($dir)
     {
-        $repository = $this->di->make(LocalRepository::class);
-        $repository->setSource($dir);
+        $repository = $this->di->make(LocalRepository::class, [
+            'src' => $dir,
+        ]);
 
         return $repository;
     }

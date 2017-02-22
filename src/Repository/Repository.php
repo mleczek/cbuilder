@@ -5,18 +5,12 @@ namespace Mleczek\CBuilder\Repository;
 use Mleczek\CBuilder\Package\Package;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 
+/**
+ * Repository constructor can accept argument with name $src
+ * (the value of "type" field in section "repositories" in package json).
+ */
 interface Repository
 {
-    /**
-     * @param string $src
-     */
-    public function setSource($src);
-
-    /**
-     * @return string
-     */
-    public function getSource();
-
     /**
      * @param string $package
      * @return bool

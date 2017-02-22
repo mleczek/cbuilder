@@ -2,17 +2,17 @@
 
 return [
 
-    /*
-     * File name which describes the module.
+    /**
+     * File name which includes all the installed packages.
      */
-    'file' => 'cbuilder.json',
+    'autoload_file' => 'autoload.h',
 
-    /*
+    /**
      * Directory in which all dependencies will be stored.
      * The path is extended using the module name.
      *
      * Example: <dir>/org/package/...
      */
-    'dir' => 'cmodules',
+    'output_dir' => 'cmodules',
 
 ];

@@ -31,14 +31,14 @@ class LocalRepository implements Repository
     private $fs;
 
     /**
-     * @var string
-     */
-    private $dir = '.';
-
-    /**
      * @var Factory
      */
     private $factory;
+
+    /**
+     * @var string
+     */
+    private $dir = '.';
 
     /**
      * LocalRepository constructor.
@@ -46,10 +46,11 @@ class LocalRepository implements Repository
      * @param Filesystem $fs
      * @param Factory $factory
      */
-    public function __construct(Filesystem $fs, Factory $factory)
+    public function __construct(Filesystem $fs, Factory $factory, $src)
     {
         $this->fs = $fs;
         $this->factory = $factory;
+        $this->dir = $src;
     }
 
     /**
@@ -91,19 +92,9 @@ class LocalRepository implements Repository
     }
 
     /**
-     * @param string $src
+     * @return string;
      */
-    public function setSource($src)
-    {
-        $this->dir = $src;
-    }
-
-    /**
-     * Get repository root directory.
-     *
-     * @return string
-     */
-    public function getSource()
+    public function getDir()
     {
         return $this->dir;
     }

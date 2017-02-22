@@ -23,9 +23,7 @@ class LocalRepositoryTest extends TestCase
             ->with('temp/org/package')
             ->willReturn($package);
 
-        $repo = new LocalRepository($fs, $factory);
-        $repo->setSource('temp');
-
+        $repo = new LocalRepository($fs, $factory, 'temp');
         $this->assertEquals($package, $repo->get('org/package'));
     }
 
@@ -36,7 +34,7 @@ class LocalRepositoryTest extends TestCase
 
         $this->expectException(PackageNotFoundException::class);
 
-        $repo = new LocalRepository($fs, $factory);
+        $repo = new LocalRepository($fs, $factory, 'temp');
         $repo->get('org/package');
     }
 
@@ -46,19 +44,18 @@ class LocalRepositoryTest extends TestCase
         $fs->touchDir('temp/org');
 
         $factory = $this->createMock(Factory::class);
-        $repo = new LocalRepository($fs, $factory);
+        $repo = new LocalRepository($fs, $factory, 'temp');
 
         $this->expectException(PackageNotFoundException::class);
         $repo->get('org/package');
     }
 
-    public function testSetAndGetSource()
+    public function testGetDir()
     {
         $fs = new Filesystem();
         $factory = $this->createMock(Factory::class);
 
-        $repo = new LocalRepository($fs, $factory);
-        $repo->setSource('example');
-        $this->assertEquals('example', $repo->getSource('example'));
+        $repo = new LocalRepository($fs, $factory, 'temp');
+        $this->assertEquals('temp', $repo->getDir());
     }
 }

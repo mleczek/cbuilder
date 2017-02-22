@@ -67,7 +67,7 @@ class FactoryTest extends TestCase
         $dir = 'temp/dir';
         $filename = 'example.json';
         $this->config->method('get')
-            ->with('modules.file')
+            ->with('package.filename')
             ->willReturn($filename);
 
         $path = "$dir/$filename";

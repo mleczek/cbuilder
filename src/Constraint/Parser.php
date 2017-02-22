@@ -6,7 +6,7 @@ use DI\Container;
 use Mleczek\CBuilder\Constraint\KeyValues;
 
 /**
- * Parse commands and json options.
+ * Parse some commands arguments and json keys or values.
  *
  * Examples:
  * - "key:value1,value2"

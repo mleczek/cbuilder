@@ -61,7 +61,7 @@ class Factory
      */
     public function fromDir($dir)
     {
-        $file = $this->fs->path($dir, $this->config->get('modules.file'));
+        $file = $this->fs->path($dir, $this->config->get('package.filename'));
 
         return $this->fromFile($file);
     }

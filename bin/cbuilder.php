@@ -16,7 +16,7 @@ $config = $container->get(\Mleczek\CBuilder\Environment\Config::class);
 $config->setDir(CBUILDER_DIR . '/config');
 
 // Check CWD (Current Working Directory)
-if (!file_exists($config->get('modules.file'))) {
+if (!file_exists($config->get('package.filename'))) {
     echo "Working directory is not recognized as the cbuilder package, check path or create new package using 'cbuilder init' command.";
     exit(-1);
 }
