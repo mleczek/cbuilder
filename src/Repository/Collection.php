@@ -3,6 +3,7 @@
 namespace Mleczek\CBuilder\Repository;
 
 use Mleczek\CBuilder\Package\Package;
+use Mleczek\CBuilder\Package\Remote;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 
 class Collection
@@ -42,7 +43,7 @@ class Collection
      * Get package from the first repository containing it.
      *
      * @param string $package
-     * @return Package
+     * @return Remote
      * @throws PackageNotFoundException
      */
     public function find($package)

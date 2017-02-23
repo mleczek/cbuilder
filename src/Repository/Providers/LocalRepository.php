@@ -5,8 +5,10 @@ namespace Mleczek\CBuilder\Repository\Providers;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Package\Factory;
 use Mleczek\CBuilder\Package\Package;
+use Mleczek\CBuilder\Package\Remote;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 use Mleczek\CBuilder\Repository\Repository;
+use Mleczek\CBuilder\Version\Providers\ConstVersionResolver;
 
 /**
  * Stores information about packages in local filesystem structure.
@@ -45,9 +47,13 @@ class LocalRepository implements Repository
      *
      * @param Filesystem $fs
      * @param Factory $factory
+     * @param $src
      */
-    public function __construct(Filesystem $fs, Factory $factory, $src)
-    {
+    public function __construct(
+        Filesystem $fs,
+        Factory $factory,
+        $src
+    ) {
         $this->fs = $fs;
         $this->factory = $factory;
         $this->dir = $src;
@@ -55,7 +61,7 @@ class LocalRepository implements Repository
 
     /**
      * @param string $package
-     * @return Package
+     * @return Remote
      * @throws PackageNotFoundException
      */
     public function get($package)
@@ -64,9 +70,11 @@ class LocalRepository implements Repository
             throw new PackageNotFoundException("Package '$package' not found in the local repository '{$this->dir}'.");
         }
 
-        return $this->factory->fromDir(
+        $package = $this->factory->makeFromDir(
             $this->pathFor($package)
         );
+
+        return $this->factory->makeRemote($this, $package);
     }
 
     /**

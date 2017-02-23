@@ -3,6 +3,7 @@
 namespace Mleczek\CBuilder\Repository;
 
 use Mleczek\CBuilder\Package\Package;
+use Mleczek\CBuilder\Package\Remote;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 
 /**
@@ -19,7 +20,7 @@ interface Repository
 
     /**
      * @param string $package
-     * @return Package
+     * @return Remote
      * @throws PackageNotFoundException
      */
     public function get($package);

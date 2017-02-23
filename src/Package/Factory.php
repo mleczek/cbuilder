@@ -6,6 +6,7 @@ use DI\Container;
 use Mleczek\CBuilder\Environment\Config;
 use Mleczek\CBuilder\Environment\Exceptions\InvalidPathException;
 use Mleczek\CBuilder\Environment\Filesystem;
+use Mleczek\CBuilder\Repository\Repository;
 use Mleczek\CBuilder\Validation\Exceptions\ValidationException;
 use Mleczek\CBuilder\Validation\Validator;
 
@@ -50,20 +51,20 @@ class Factory
     /**
      * @return Package
      */
-    public function current()
+    public function makeCurrent()
     {
-        return $this->fromDir('.');
+        return $this->makeFromDir('.');
     }
 
     /**
      * @param string $dir
      * @return Package
      */
-    public function fromDir($dir)
+    public function makeFromDir($dir)
     {
         $file = $this->fs->path($dir, $this->config->get('package.filename'));
 
-        return $this->fromFile($file);
+        return $this->makeFromFile($file);
     }
 
     /**
@@ -71,11 +72,11 @@ class Factory
      * @return Package
      * @throws InvalidPathException
      */
-    public function fromFile($file)
+    public function makeFromFile($file)
     {
         $content = $this->fs->readFile($file);
 
-        return $this->fromJson($content);
+        return $this->makeFromJson($content);
     }
 
     /**
@@ -83,7 +84,7 @@ class Factory
      * @return Package
      * @throws \Mleczek\CBuilder\Validation\Exceptions\ValidationException
      */
-    public function fromJson($json)
+    public function makeFromJson($json)
     {
         $this->validator->validate(
             $json,
@@ -96,6 +97,19 @@ class Factory
 
         return $this->di->make(Package::class, [
             'json' => $json,
+        ]);
+    }
+
+    /**
+     * @param Repository $repository
+     * @param Package $package
+     * @return Remote
+     */
+    public function makeRemote(Repository $repository, Package $package)
+    {
+        return $this->di->make(Remote::class, [
+            'repository' => $repository,
+            'package' => $package,
         ]);
     }
 }

@@ -5,9 +5,11 @@ namespace Mleczek\CBuilder\Tests\Repository\Providers;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Package\Factory;
 use Mleczek\CBuilder\Package\Package;
+use Mleczek\CBuilder\Package\Remote;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 use Mleczek\CBuilder\Repository\Providers\LocalRepository;
 use Mleczek\CBuilder\Tests\TestCase;
+use Mleczek\CBuilder\Version\Providers\ConstVersionResolver;
 
 class LocalRepositoryTest extends TestCase
 {
@@ -19,12 +21,19 @@ class LocalRepositoryTest extends TestCase
         $package = $this->createMock(Package::class);
         $factory = $this->createMock(Factory::class);
         $factory->expects($this->once())
-            ->method('fromDir')
+            ->method('makeFromDir')
             ->with('temp/org/package')
             ->willReturn($package);
 
         $repo = new LocalRepository($fs, $factory, 'temp');
-        $this->assertEquals($package, $repo->get('org/package'));
+
+        $remote = $this->createMock(Remote::class);
+        $factory->expects($this->once())
+            ->method('makeRemote')
+            ->with($repo, $package)
+            ->willReturn($remote);
+
+        $this->assertEquals($remote, $repo->get('org/package'));
     }
 
     public function testGetWhenRootDirNotExists()

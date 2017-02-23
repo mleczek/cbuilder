@@ -6,6 +6,7 @@ use Mleczek\CBuilder\Package\Package;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 use Mleczek\CBuilder\Repository\Exceptions\RepositorySourceNotExistsException;
 use Mleczek\CBuilder\Repository\Repository;
+use Mleczek\CBuilder\Package\Remote;
 
 /**
  * Empty repository used as a parent for the root package.
@@ -23,7 +24,7 @@ class EmptyRepository implements Repository
 
     /**
      * @param string $package
-     * @return Package
+     * @return Remote
      * @throws PackageNotFoundException
      */
     public function get($package)

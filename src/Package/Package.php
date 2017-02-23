@@ -10,6 +10,9 @@ use Mleczek\CBuilder\Package\Exceptions\UnrecognizedLinkingException;
 use Mleczek\CBuilder\Package\Exceptions\UnrecognizedPlatformException;
 use Mleczek\CBuilder\Package\Exceptions\UnrecognizedTypeException;
 
+/**
+ * Represents immutable cbuilder.json file.
+ */
 class Package
 {
     /**

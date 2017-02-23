@@ -7,6 +7,8 @@ use Mleczek\CBuilder\Environment\Config;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Package\Factory;
 use Mleczek\CBuilder\Package\Package;
+use Mleczek\CBuilder\Package\Remote;
+use Mleczek\CBuilder\Repository\Repository;
 use Mleczek\CBuilder\Tests\TestCase;
 use Mleczek\CBuilder\Validation\Validator;
 
@@ -43,25 +45,25 @@ class FactoryTest extends TestCase
         $this->validator = $this->createMock(Validator::class);
     }
 
-    public function testCurrent()
+    public function testMakeCurrent()
     {
         $factory = $this->getMockBuilder(Factory::class)
             ->setConstructorArgs([$this->di, $this->fs, $this->config, $this->validator])
-            ->setMethods(['fromDir'])
+            ->setMethods(['makeFromDir'])
             ->getMock();
 
         $factory->expects($this->once())
-            ->method('fromDir')
+            ->method('makeFromDir')
             ->with('.');
 
-        $factory->current();
+        $factory->makeCurrent();
     }
 
-    public function testFromDir()
+    public function testMakeFromDir()
     {
         $factory = $this->getMockBuilder(Factory::class)
             ->setConstructorArgs([$this->di, new Filesystem(), $this->config, $this->validator])
-            ->setMethods(['fromFile'])
+            ->setMethods(['makeFromFile'])
             ->getMock();
 
         $dir = 'temp/dir';
@@ -76,17 +78,17 @@ class FactoryTest extends TestCase
             ->willReturn($path);
 
         $factory->expects($this->once())
-            ->method('fromFile')
+            ->method('makeFromFile')
             ->with($path);
 
-        $factory->fromDir($dir);
+        $factory->makeFromDir($dir);
     }
 
-    public function testFromFile()
+    public function testMakeFromFile()
     {
         $factory = $this->getMockBuilder(Factory::class)
             ->setConstructorArgs([$this->di, $this->fs, $this->config, $this->validator])
-            ->setMethods(['fromJson'])
+            ->setMethods(['makeFromJson'])
             ->getMock();
 
         $file = 'temp/dir/example.json';
@@ -96,13 +98,13 @@ class FactoryTest extends TestCase
             ->willReturn($json);
 
         $factory->expects($this->once())
-            ->method('fromJson')
+            ->method('makeFromJson')
             ->with($json);
 
-        $factory->fromFile($file);
+        $factory->makeFromFile($file);
     }
 
-    public function testFromJson()
+    public function testMakeFromJson()
     {
         $jsonStr = '{"a": 3}';
         $jsonObj = (object)['a' => 3];
@@ -120,7 +122,24 @@ class FactoryTest extends TestCase
             )->willReturn($result);
 
         $factory = new Factory($this->di, $this->fs, $this->config, $this->validator);
-        $this->assertEquals($result, $factory->fromJson($jsonStr));
-        $this->assertEquals($result, $factory->fromJson($jsonObj));
+        $this->assertEquals($result, $factory->makeFromJson($jsonStr));
+        $this->assertEquals($result, $factory->makeFromJson($jsonObj));
+    }
+
+    public function testMakeRemote()
+    {
+        $repo = $this->createMock(Repository::class);
+        $package = $this->createMock(Package::class);
+        $remote = $this->createMock(Remote::class);
+
+        $this->di->expects($this->once())
+            ->method('make')
+            ->with(Remote::class, [
+                'repository' => $repo,
+                'package' => $package
+            ])->willReturn($remote);
+
+        $factory = new Factory($this->di, $this->fs, $this->config, $this->validator);
+        $this->assertEquals($remote, $factory->makeRemote($repo, $package));
     }
 }
