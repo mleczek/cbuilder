@@ -295,26 +295,4 @@ class Filesystem
             throw new UnknownException("Cannot remove '$dir' directory. Please check if the '$scriptOwner' user have appropriate permissions.");
         }
     }
-
-    /**
-     * Get size of the file.
-     *
-     * @param string $file
-     * @return int Size in bytes.
-     */
-    public function sizeOfFile($file)
-    {
-        // TODO: ...
-    }
-
-    /**
-     * Get size of all files in directory and sub-directories.
-     *
-     * @param string $dir
-     * @return int Size in bytes.
-     */
-    public function sizeOfDir($dir)
-    {
-        // TODO: ...
-    }
 }

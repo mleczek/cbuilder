@@ -33,7 +33,7 @@ class LocalDownloaderTest extends TestCase
     public function testDownload()
     {
         $called = false;
-        $progress = function($perc) use (&$called) {
+        $progress = function ($perc) use (&$called) {
             $called = true;
             $this->assertEquals(100, $perc);
         };
