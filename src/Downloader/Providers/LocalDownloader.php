@@ -61,7 +61,7 @@ class LocalDownloader implements Downloader
     {
         $this->success = false;
 
-        if(!$this->fs->existsDir($this->from())) {
+        if (!$this->fs->existsDir($this->from())) {
             throw new SourceNotExistsException("Cannot point to local package '{$this->from()}' (directory not exists).");
         }
 
@@ -71,7 +71,7 @@ class LocalDownloader implements Downloader
         // This improves development process of packages in progress
         // which still has not been published (there're always synced).
 
-        if(is_callable($progress)) {
+        if (is_callable($progress)) {
             $progress(100);
         }
 
