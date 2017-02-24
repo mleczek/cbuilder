@@ -3,9 +3,9 @@
 namespace Mleczek\CBuilder\Version\Providers;
 
 use Mleczek\CBuilder\Version\Comparator;
-use Mleczek\CBuilder\Version\Resolver;
+use Mleczek\CBuilder\Version\Finder;
 
-class ConstVersionResolver implements Resolver
+class ConstVersionFinder implements Finder
 {
     const VERSION = '1.0.0';
 
@@ -15,21 +15,21 @@ class ConstVersionResolver implements Resolver
     private $comparator;
 
     /**
-     * ConstVersionResolver constructor.
+     * ConstVersionFinder constructor.
      *
      * @param Comparator $comparator
+     * @param string $package
      */
-    public function __construct(Comparator $comparator)
+    public function __construct(Comparator $comparator, $package)
     {
         $this->comparator = $comparator;
     }
 
     /**
-     * @param string $package
      * @param string $version
      * @return bool
      */
-    public function has($package, $version)
+    public function has($version)
     {
         return $this->comparator->equalTo($version, self::VERSION);
     }
@@ -37,10 +37,9 @@ class ConstVersionResolver implements Resolver
     /**
      * Get all available package versions.
      *
-     * @param string $package
      * @return string[]
      */
-    public function get($package)
+    public function get()
     {
         return [self::VERSION];
     }
@@ -48,25 +47,23 @@ class ConstVersionResolver implements Resolver
     /**
      * Get versions which satisfy constraint.
      *
-     * @param string $package
      * @param string $constraint Version constraint (eq. ">= 5.3").
      * @return string[]
      */
-    public function getSatisfiedBy($package, $constraint)
+    public function getSatisfiedBy($constraint)
     {
-        $versions = $this->get($package);
+        $versions = $this->get();
 
         return $this->comparator->satisfiedBy($versions, $constraint);
     }
 
     /**
-     * @param string $package
      * @param string $version
      * @return string[]
      */
-    public function getGreaterThan($package, $version)
+    public function getGreaterThan($version)
     {
-        $versions = $this->get($package);
+        $versions = $this->get();
 
         return $this->comparator->satisfiedBy($versions, "> $version");
     }

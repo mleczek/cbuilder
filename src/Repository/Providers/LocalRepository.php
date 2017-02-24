@@ -2,13 +2,16 @@
 
 namespace Mleczek\CBuilder\Repository\Providers;
 
+use Mleczek\CBuilder\Downloader\Providers\LocalDownloader;
 use Mleczek\CBuilder\Environment\Filesystem;
-use Mleczek\CBuilder\Package\Factory;
+use Mleczek\CBuilder\Package\Factory as PackageFactory;
+use Mleczek\CBuilder\Downloader\Factory as DownloaderFactory;
+use Mleczek\CBuilder\Version\Factory as VersionFinderFactory;
 use Mleczek\CBuilder\Package\Package;
 use Mleczek\CBuilder\Package\Remote;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 use Mleczek\CBuilder\Repository\Repository;
-use Mleczek\CBuilder\Version\Providers\ConstVersionResolver;
+use Mleczek\CBuilder\Version\Providers\ConstVersionFinder;
 
 /**
  * Stores information about packages in local filesystem structure.
@@ -33,9 +36,9 @@ class LocalRepository implements Repository
     private $fs;
 
     /**
-     * @var Factory
+     * @var PackageFactory
      */
-    private $factory;
+    private $packageFactory;
 
     /**
      * @var string
@@ -43,19 +46,35 @@ class LocalRepository implements Repository
     private $dir = '.';
 
     /**
+     * @var VersionFinderFactory
+     */
+    private $versionFinderFactory;
+
+    /**
+     * @var DownloaderFactory
+     */
+    private $downloaderFactory;
+
+    /**
      * LocalRepository constructor.
      *
      * @param Filesystem $fs
-     * @param Factory $factory
+     * @param PackageFactory $packageFactory
+     * @param VersionFinderFactory $versionFinderFactory
+     * @param DownloaderFactory $downloaderFactory
      * @param $src
      */
     public function __construct(
         Filesystem $fs,
-        Factory $factory,
+        PackageFactory $packageFactory,
+        VersionFinderFactory $versionFinderFactory,
+        DownloaderFactory $downloaderFactory,
         $src
     ) {
         $this->fs = $fs;
-        $this->factory = $factory;
+        $this->packageFactory = $packageFactory;
+        $this->versionFinderFactory = $versionFinderFactory;
+        $this->downloaderFactory = $downloaderFactory;
         $this->dir = $src;
     }
 
@@ -70,11 +89,18 @@ class LocalRepository implements Repository
             throw new PackageNotFoundException("Package '$package' not found in the local repository '{$this->dir}'.");
         }
 
-        $package = $this->factory->makeFromDir(
-            $this->pathFor($package)
-        );
+        $path = $this->pathFor($package);
 
-        return $this->factory->makeRemote($this, $package);
+        $package = $this->packageFactory->makeFromDir($path);
+        $versionFinder = $this->versionFinderFactory->makeConst();
+        $downloader = $this->downloaderFactory->makeLocal($path);
+
+        return $this->packageFactory->makeRemote(
+            $this,
+            $versionFinder,
+            $downloader,
+            $package
+        );
     }
 
     /**

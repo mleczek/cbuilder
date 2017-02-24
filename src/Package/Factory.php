@@ -3,12 +3,14 @@
 namespace Mleczek\CBuilder\Package;
 
 use DI\Container;
+use Mleczek\CBuilder\Downloader\Downloader;
 use Mleczek\CBuilder\Environment\Config;
 use Mleczek\CBuilder\Environment\Exceptions\InvalidPathException;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Repository\Repository;
 use Mleczek\CBuilder\Validation\Exceptions\ValidationException;
 use Mleczek\CBuilder\Validation\Validator;
+use Mleczek\CBuilder\Version\Finder;
 
 class Factory
 {
@@ -102,13 +104,21 @@ class Factory
 
     /**
      * @param Repository $repository
+     * @param Finder $versionFinder
+     * @param Downloader $downloader
      * @param Package $package
      * @return Remote
      */
-    public function makeRemote(Repository $repository, Package $package)
-    {
+    public function makeRemote(
+        Repository $repository,
+        Finder $versionFinder,
+        Downloader $downloader,
+        Package $package
+    ) {
         return $this->di->make(Remote::class, [
             'repository' => $repository,
+            'versionFinder' => $versionFinder,
+            'downloader' => $downloader,
             'package' => $package,
         ]);
     }

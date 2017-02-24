@@ -3,6 +3,7 @@
 namespace Mleczek\CBuilder\Tests\Package;
 
 use DI\Container;
+use Mleczek\CBuilder\Downloader\Downloader;
 use Mleczek\CBuilder\Environment\Config;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Package\Factory;
@@ -11,6 +12,7 @@ use Mleczek\CBuilder\Package\Remote;
 use Mleczek\CBuilder\Repository\Repository;
 use Mleczek\CBuilder\Tests\TestCase;
 use Mleczek\CBuilder\Validation\Validator;
+use Mleczek\CBuilder\Version\Finder;
 
 class FactoryTest extends TestCase
 {
@@ -129,6 +131,8 @@ class FactoryTest extends TestCase
     public function testMakeRemote()
     {
         $repo = $this->createMock(Repository::class);
+        $finder = $this->createMock(Finder::class);
+        $downloader = $this->createMock(Downloader::class);
         $package = $this->createMock(Package::class);
         $remote = $this->createMock(Remote::class);
 
@@ -136,10 +140,12 @@ class FactoryTest extends TestCase
             ->method('make')
             ->with(Remote::class, [
                 'repository' => $repo,
+                'versionFinder' => $finder,
+                'downloader' => $downloader,
                 'package' => $package
             ])->willReturn($remote);
 
         $factory = new Factory($this->di, $this->fs, $this->config, $this->validator);
-        $this->assertEquals($remote, $factory->makeRemote($repo, $package));
+        $this->assertEquals($remote, $factory->makeRemote($repo, $finder, $downloader, $package));
     }
 }
