@@ -7,4 +7,9 @@ return [
      */
     'filename' => 'cbuilder.json',
 
+    /**
+     * Lock file path.
+     */
+    'lock_path' => 'cbuilder.lock'
+
 ];
