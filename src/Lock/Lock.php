@@ -66,7 +66,7 @@ class Lock
      *
      * @return array Package name (key) with installed version (value).
      */
-    public function installed()
+    public function packages()
     {
         return $this->packages;
     }
@@ -79,7 +79,7 @@ class Lock
     public function save($file)
     {
         $json = json_encode([
-            'dependencies' => $this->installed(),
+            'dependencies' => $this->packages(),
         ]);
 
         $this->fs->writeFile($file, $json);

@@ -18,7 +18,7 @@ class LockTest extends TestCase
         $lock = new Lock($fs, $json);
         $this->assertEquals(
             ['org/a' => '3.1.8', 'org/b' => '1.0.2'],
-            $lock->installed()
+            $lock->packages()
         );
     }
 
@@ -27,7 +27,7 @@ class LockTest extends TestCase
         $fs = $this->createMock(Filesystem::class);
 
         $lock = new Lock($fs);
-        $this->assertEquals([], $lock->installed());
+        $this->assertEquals([], $lock->packages());
     }
 
     public function testAdd()
@@ -39,7 +39,7 @@ class LockTest extends TestCase
         $lock->add('org/c', '3.3');
         $this->assertEquals(
             ['org/a' => '3.1.8', 'org/b' => '1.0.2', 'org/c' => '3.3'],
-            $lock->installed()
+            $lock->packages()
         );
     }
 
@@ -60,7 +60,7 @@ class LockTest extends TestCase
 
         $lock = new Lock($fs, $json);
         $lock->remove('org/a');
-        $this->assertEquals(['org/b' => '1.0.2'], $lock->installed());
+        $this->assertEquals(['org/b' => '1.0.2'], $lock->packages());
     }
 
     public function testRemoveNotExisting()
