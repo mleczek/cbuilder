@@ -2,6 +2,7 @@
 
 namespace Mleczek\CBuilder\Tests\Downloader\Providers;
 
+use Mleczek\CBuilder\Downloader\Exceptions\DestinationNotExistsException;
 use Mleczek\CBuilder\Downloader\Exceptions\SourceNotExistsException;
 use Mleczek\CBuilder\Downloader\Providers\LocalDownloader;
 use Mleczek\CBuilder\Environment\Filesystem;
@@ -9,11 +10,6 @@ use Mleczek\CBuilder\Tests\TestCase;
 
 class LocalDownloaderTest extends TestCase
 {
-    /**
-     * @var Filesystem
-     */
-    private $fs;
-
     /**
      * @var LocalDownloader
      */
@@ -39,6 +35,8 @@ class LocalDownloaderTest extends TestCase
         };
 
         $this->fs->touchDir('temp');
+        $this->downloader->to('temp');
+
         $this->assertEquals('temp', $this->downloader->download('1.0', $progress));
         $this->assertTrue($this->downloader->success());
         $this->assertTrue($called);
@@ -47,8 +45,11 @@ class LocalDownloaderTest extends TestCase
     public function testDownloadWithoutProgress()
     {
         $this->fs->touchDir('temp');
+        $this->downloader->to('temp/dest');
+
         $this->assertEquals('temp', $this->downloader->download('1.0'));
         $this->assertTrue($this->downloader->success());
+        $this->assertEquals('temp', $this->fs->readFile('temp/dest/cbuilder.link'));
     }
 
     public function testDownloadNotExistingDir()
@@ -57,9 +58,16 @@ class LocalDownloaderTest extends TestCase
         $this->downloader->download('1.0', null);
     }
 
-    public function testDummyTo()
+    public function testDownloadDestinationNotSpecified()
     {
-        $this->assertEquals($this->downloader, $this->downloader->to('xyz'));
-        $this->assertEquals('temp', $this->downloader->from());
+        $this->expectException(DestinationNotExistsException::class);
+
+        $this->fs->touchDir('temp');
+        $this->downloader->download('1.0', null);
     }
+
+    /**
+     * @var Filesystem
+     */
+    private $fs;
 }

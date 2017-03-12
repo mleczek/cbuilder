@@ -3,6 +3,7 @@
 namespace Mleczek\CBuilder\Downloader\Providers;
 
 use Mleczek\CBuilder\Downloader\Downloader;
+use Mleczek\CBuilder\Downloader\Exceptions\DestinationNotExistsException;
 use Mleczek\CBuilder\Downloader\Exceptions\SourceNotExistsException;
 use Mleczek\CBuilder\Environment\Filesystem;
 
@@ -11,7 +12,14 @@ class LocalDownloader implements Downloader
     /**
      * @var string
      */
-    private $dir;
+    private $srcDir;
+
+    /**
+     * Destination directory
+     *
+     * @var string
+     */
+    private $destDir = null;
 
     /**
      * Last downloading status;
@@ -33,7 +41,7 @@ class LocalDownloader implements Downloader
      */
     public function __construct(Filesystem $fs, $src)
     {
-        $this->dir = $src;
+        $this->srcDir = $src;
         $this->fs = $fs;
     }
 
@@ -46,36 +54,46 @@ class LocalDownloader implements Downloader
      */
     public function to($dir)
     {
-        // Destination directory is not required, skip it.
+        $this->destDir = $dir;
 
         return $this;
     }
 
     /**
+     * Local downloader just point to the directory outside
+     * the project directory without downloading/copying it.
+     *
+     * This improves development process of packages in progress
+     * which still has not been published (there're always synced).
+     *
      * @param string $version
      * @param \Closure|null $progress Accept one argument - percentage (int in range [0-100])
-     * @return string|false Output directory if downloaded successfully, false otherwise.
+     * @return false|string Output directory if downloaded successfully, false otherwise.
+     * @throws DestinationNotExistsException
      * @throws SourceNotExistsException
      */
     public function download($version, \Closure $progress = null)
     {
         $this->success = false;
 
+        // Check source directory
         if (!$this->fs->existsDir($this->from())) {
             throw new SourceNotExistsException("Cannot point to local package '{$this->from()}' (directory not exists).");
         }
 
-        // Local downloader just point to the directory outside
-        // the project directory without downloading/copying it.
-        //
-        // This improves development process of packages in progress
-        // which still has not been published (there're always synced).
+        // Check destination directory
+        if(is_null($this->destDir)) {
+            throw new DestinationNotExistsException("Cannot download package to '{$this->destDir}' (directory not exists).");
+        }
 
+        // Create link file
+        $this->fs->writeFile("{$this->destDir}/cbuilder.link", $this->from()); // TODO: Move cbuilder.link to config
+
+        // Inform about completion
+        $this->success = true;
         if (is_callable($progress)) {
             $progress(100);
         }
-
-        $this->success = true;
 
         return $this->from();
     }
@@ -87,7 +105,7 @@ class LocalDownloader implements Downloader
      */
     public function from()
     {
-        return $this->dir;
+        return $this->srcDir;
     }
 
     /**
