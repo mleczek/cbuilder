@@ -295,4 +295,35 @@ class Filesystem
             throw new UnknownException("Cannot remove '$dir' directory. Please check if the '$scriptOwner' user have appropriate permissions.");
         }
     }
+
+    /**
+     * Get file name (including extensions) from path.
+     *
+     * @param string $file
+     * @return string
+     */
+    public function getFileName($file)
+    {
+        $file = preg_replace('/[\\\\\/]+/', '/', $file);
+        $parts = explode('/', $file);
+
+        return array_pop($parts);
+    }
+
+    /**
+     * Get dir from path pointing to the file.
+     *
+     * @param string $file
+     * @return string
+     */
+    public function getDirName($file)
+    {
+        $file = preg_replace('/[\\\\\/]+/', '/', $file);
+        $parts = explode('/', $file);
+
+        // Remove file name part.
+        array_pop($parts);
+
+        return implode('/', $parts);
+    }
 }

@@ -302,4 +302,43 @@ class FilesystemTest extends TestCase
         flock($file, LOCK_UN);
         fclose($file);
     }
+
+    /**
+     * @dataProvider getFileNameDataProvider
+     */
+    public function testGetFileName($path, $fileName)
+    {
+        $this->assertEquals($fileName, $this->fs->getFileName($path));
+    }
+
+    public function getFileNameDataProvider()
+    {
+        return [
+            'only file name' => ['file.txt', 'file.txt'],
+            'in directory' => ['temp/a.txt', 'a.txt'],
+            'in nested dir' => ['temp/a/b.txt', 'b.txt'],
+            'directory path' => ['temp/', ''],
+            'windows dir separator' => ['temp\\a.txt', 'a.txt'],
+        ];
+    }
+
+    /**
+     * @dataProvider getDirNameDataProvider
+     */
+    public function testGetDirName($path, $dirName)
+    {
+        $this->assertEquals($dirName, $this->fs->getDirName($path));
+    }
+
+    public function getDirNameDataProvider()
+    {
+        return [
+            'only file name' => ['file.txt', ''],
+            'in directory' => ['temp/a.txt', 'temp'],
+            'in nested dir' => ['temp/a/b.txt', 'temp/a'],
+            'directory path' => ['temp/', 'temp'],
+            'windows dir separator' => ['temp\\a.txt', 'temp'],
+            'nested windows dir separator' => ['temp\\b\\a.txt', 'temp/b'],
+        ];
+    }
 }
