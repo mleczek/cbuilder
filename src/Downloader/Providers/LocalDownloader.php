@@ -82,7 +82,7 @@ class LocalDownloader implements Downloader
         }
 
         // Check destination directory
-        if(is_null($this->destDir)) {
+        if (is_null($this->destDir)) {
             throw new DestinationNotExistsException("Cannot download package to '{$this->destDir}' (directory not exists).");
         }
 

@@ -69,12 +69,24 @@ interface Compiler
     public function setMacro(array $macros);
 
     /**
+     * Link static library.
+     *
+     * Library can be specified using name or as a path with lib name.
+     * When path is provided then directory will be added to the linker
+     * to looks in that directory for library files.
+     *
      * @param string|string[] $libFiles
      * @return $this
      */
     public function linkStatic($libFiles);
 
     /**
+     * Link shared library.
+     *
+     * Library can be specified using name or as a path with lib name.
+     * When path is provided then directory will be added to the linker
+     * to looks in that directory for library files.
+     *
      * @param string|string[] $libFiles
      * @return $this
      */
