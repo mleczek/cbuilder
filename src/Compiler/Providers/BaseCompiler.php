@@ -107,20 +107,6 @@ abstract class BaseCompiler implements Compiler
     }
 
     /**
-     * Set directories in which compiler
-     * will search for headers.
-     *
-     * @param string|string[] $dirs
-     * @return $this
-     */
-    public function setIncludeDirs($dirs)
-    {
-        $this->includeDirs = (array)$dirs;
-
-        return $this;
-    }
-
-    /**
      * Register macro constraint.
      *
      * @param string $name
@@ -154,12 +140,37 @@ abstract class BaseCompiler implements Compiler
      * When path is provided then directory will be added to the linker
      * to looks in that directory for library files.
      *
-     * @param string|string[] $libFiles
+     * @param string|string[] $libFiles File(s) without extension.
+     * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkStatic($libFiles)
+    public function linkStatic($libFiles, $includeDirs = null)
     {
-        $this->linkStatic = (array)$libFiles;
+        $this->linkStatic = array_merge(
+            $this->linkStatic,
+            (array)$libFiles
+        );
+
+        if (!is_null($includeDirs)) {
+            $this->addIncludeDirs($includeDirs);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add directories in which compiler
+     * will search for headers.
+     *
+     * @param string|string[] $dirs
+     * @return $this
+     */
+    public function addIncludeDirs($dirs)
+    {
+        $this->includeDirs = array_merge(
+            $this->includeDirs,
+            (array)$dirs
+        );
 
         return $this;
     }
@@ -171,13 +182,20 @@ abstract class BaseCompiler implements Compiler
      * When path is provided then directory will be added to the linker
      * to looks in that directory for library files.
      *
-     * @param string|string[] $libFiles
+     * @param string|string[] $libFiles File(s) without extension.
+     * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkDynamic($libFiles)
+    public function linkDynamic($libFiles, $includeDirs = null)
     {
-        $this->linkDynamic = (array)$libFiles;
+        $this->linkDynamic = array_merge(
+            $this->linkDynamic,
+            (array)$libFiles
+        );
 
+        if (!is_null($includeDirs)) {
+            $this->addIncludeDirs($includeDirs);
+        }
         return $this;
     }
 

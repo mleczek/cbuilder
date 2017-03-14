@@ -4,6 +4,7 @@ namespace Mleczek\CBuilder\Compiler\Providers;
 
 use Mleczek\CBuilder\Compiler\Exceptions\CompilerNotFoundException;
 use Mleczek\CBuilder\Compiler\Exceptions\UnknownCompilerVersionException;
+use Mleczek\CBuilder\Environment\FileExtensions;
 use Mleczek\CBuilder\Environment\Filesystem;
 
 /**
@@ -28,13 +29,20 @@ class GccCompiler extends BaseCompiler
     private $fs;
 
     /**
+     * @var FileExtensions
+     */
+    private $ext;
+
+    /**
      * GccCompiler constructor.
      *
      * @param Filesystem $fs
+     * @param FileExtensions $ext
      */
-    public function __construct(Filesystem $fs)
+    public function __construct(Filesystem $fs, FileExtensions $ext)
     {
         $this->fs = $fs;
+        $this->ext = $ext;
         $this->preapre();
     }
 
@@ -94,7 +102,7 @@ class GccCompiler extends BaseCompiler
     }
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildExecutable($outputFile)
     {
@@ -102,7 +110,7 @@ class GccCompiler extends BaseCompiler
             '-Wall', // all warnings messages
             $this->sourceFiles,
             self::ARCHITECTURE_OPTIONS[$this->architecture],
-            ['-o', $outputFile],
+            ['-o', $outputFile . $this->ext->executable()],
             $this->debugSymbols ? '-g' : [],
             $this->intermediateFiles ? '-save-temps=obj' : [],
             $this->getMacrosCommandOptions(),
@@ -157,7 +165,7 @@ class GccCompiler extends BaseCompiler
             $results[] = escapeshellarg($libName);
         }
 
-        return [];
+        return $results;
     }
 
     /**
@@ -178,18 +186,59 @@ class GccCompiler extends BaseCompiler
     }
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildStaticLibrary($outputFile)
     {
-        // TODO: Implement buildStaticLibrary() method.
+        $objPath = $outputFile . '.o';
+
+        // Object file
+        $this->buildObjectFile($objPath);
+
+        // Library file
+        $this->run('ar',
+            // "r" means to insert with replacement,
+            // "c" means to create a new archive,
+            // and "s" means to write an index.
+            'rcs',
+            $outputFile . $this->ext->staticLibrary(),
+            $objPath
+        );
     }
 
     /**
-     * @param string $outputFile
+     * @param string $objOutput Object output path.
+     */
+    private function buildObjectFile($objOutput)
+    {
+        $this->run('gcc',
+            '-c', // compile and assemble, but do not link
+            '-Wall', // all warnings messages
+            $this->sourceFiles,
+            self::ARCHITECTURE_OPTIONS[$this->architecture],
+            ['-o', $objOutput],
+            $this->debugSymbols ? '-g' : [],
+            $this->intermediateFiles ? '-save-temps=obj' : [],
+            $this->getMacrosCommandOptions(),
+            $this->getIncludeDirsCommandOptions()
+        );
+    }
+
+    /**
+     * @param string $outputFile File path without extension.
      */
     public function buildSharedLibrary($outputFile)
     {
-        // TODO: Implement buildSharedLibrary() method.
+        $objPath = $outputFile . '.o';
+
+        // Object file
+        $this->buildObjectFile($objPath);
+
+        // Library file
+        $this->run('gcc',
+            '-shared',
+            ['-o', $outputFile . $this->ext->sharedLibrary()],
+            $objPath
+        );
     }
 }

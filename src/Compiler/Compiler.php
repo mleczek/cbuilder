@@ -43,13 +43,13 @@ interface Compiler
     public function setSourceFiles($files);
 
     /**
-     * Set directories in which compiler
+     * Add directories in which compiler
      * will search for headers.
      *
      * @param string|string[] $dirs
      * @return $this
      */
-    public function setIncludeDirs($dirs);
+    public function addIncludeDirs($dirs);
 
     /**
      * Register macro constraint.
@@ -75,10 +75,11 @@ interface Compiler
      * When path is provided then directory will be added to the linker
      * to looks in that directory for library files.
      *
-     * @param string|string[] $libFiles
+     * @param string|string[] $libFiles File(s) without extension.
+     * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkStatic($libFiles);
+    public function linkStatic($libFiles, $includeDirs = null);
 
     /**
      * Link shared library.
@@ -87,23 +88,24 @@ interface Compiler
      * When path is provided then directory will be added to the linker
      * to looks in that directory for library files.
      *
-     * @param string|string[] $libFiles
+     * @param string|string[] $libFiles File(s) without extension.
+     * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkDynamic($libFiles);
+    public function linkDynamic($libFiles, $includeDirs = null);
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildExecutable($outputFile);
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildStaticLibrary($outputFile);
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildSharedLibrary($outputFile);
 
