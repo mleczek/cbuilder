@@ -218,6 +218,7 @@ class GccCompiler extends BaseCompiler
             ['-o', $objOutput],
             $this->debugSymbols ? '-g' : [],
             $this->intermediateFiles ? '-save-temps=obj' : [],
+            self::ARCHITECTURE_OPTIONS[$this->architecture],
             $this->getMacrosCommandOptions(),
             $this->getIncludeDirsCommandOptions()
         );
@@ -236,6 +237,7 @@ class GccCompiler extends BaseCompiler
         // Library file
         $this->run('gcc',
             '-shared',
+            self::ARCHITECTURE_OPTIONS[$this->architecture],
             ['-o', $outputFile . $this->ext->sharedLibrary()],
             $objPath
         );
