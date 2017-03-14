@@ -99,9 +99,12 @@ abstract class BaseCompiler implements Compiler
      * @param string|string[] $files
      * @return $this
      */
-    public function setSourceFiles($files)
+    public function addSourceFiles($files)
     {
-        $this->sourceFiles = (array)$files;
+        $this->sourceFiles = array_merge(
+            $this->sourceFiles,
+            (array)$files
+        );
 
         return $this;
     }
@@ -131,7 +134,7 @@ abstract class BaseCompiler implements Compiler
      * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkStatic($libFiles, $includeDirs = null)
+    public function addStaticLibrary($libFiles, $includeDirs = null)
     {
         $this->linkStatic = array_merge(
             $this->linkStatic,
@@ -173,7 +176,7 @@ abstract class BaseCompiler implements Compiler
      * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkDynamic($libFiles, $includeDirs = null)
+    public function addSharedLibrary($libFiles, $includeDirs = null)
     {
         $this->linkDynamic = array_merge(
             $this->linkDynamic,

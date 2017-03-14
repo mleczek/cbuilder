@@ -215,7 +215,6 @@ class GccCompiler extends BaseCompiler
             '-c', // compile and assemble, but do not link
             '-Wall', // all warnings messages
             $this->sourceFiles,
-            self::ARCHITECTURE_OPTIONS[$this->architecture],
             ['-o', $objOutput],
             $this->debugSymbols ? '-g' : [],
             $this->intermediateFiles ? '-save-temps=obj' : [],

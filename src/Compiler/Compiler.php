@@ -40,7 +40,7 @@ interface Compiler
      * @param string|string[] $files
      * @return $this
      */
-    public function setSourceFiles($files);
+    public function addSourceFiles($files);
 
     /**
      * Add directories in which compiler
@@ -71,7 +71,7 @@ interface Compiler
      * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkStatic($libFiles, $includeDirs = null);
+    public function addStaticLibrary($libFiles, $includeDirs = null);
 
     /**
      * Link shared library.
@@ -84,7 +84,7 @@ interface Compiler
      * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkDynamic($libFiles, $includeDirs = null);
+    public function addSharedLibrary($libFiles, $includeDirs = null);
 
     /**
      * @param string $outputFile File path without extension.
