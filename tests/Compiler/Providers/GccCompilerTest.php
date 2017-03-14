@@ -76,11 +76,11 @@ class GccCompilerTest extends TestCase
         $this->gcc->setArchitecture('x86')
             ->setSourceFiles('resources/fixtures/shared-library/src/codes.cpp')
             ->addIncludeDirs('resources/fixtures/shared-library/include')
-            ->buildStaticLibrary('temp/codes');
+            ->buildSharedLibrary('temp/codes');
 
         $this->gcc->setArchitecture('x86')
             ->setSourceFiles('resources/fixtures/linking/dynamic.cpp')
-            ->linkStatic('temp/codes', 'resources/fixtures/shared-library/include')
+            ->linkDynamic('temp/codes', 'resources/fixtures/shared-library/include')
             ->buildExecutable('temp/output');
 
         $output = [];
@@ -103,12 +103,12 @@ class GccCompilerTest extends TestCase
         $this->gcc->setArchitecture('x86')
             ->setSourceFiles('resources/fixtures/shared-library/src/codes.cpp')
             ->addIncludeDirs('resources/fixtures/shared-library/include')
-            ->buildStaticLibrary('temp/codes');
+            ->buildSharedLibrary('temp/codes');
 
         $this->gcc->setArchitecture('x86')
             ->setSourceFiles('resources/fixtures/linking/both.cpp')
             ->linkStatic('temp/console', 'resources/fixtures/static-library/include')
-            ->linkStatic('temp/codes', 'resources/fixtures/shared-library/include')
+            ->linkDynamic('temp/codes', 'resources/fixtures/shared-library/include')
             ->buildExecutable('temp/output');
 
         $output = [];

@@ -10,7 +10,7 @@ matrix:
   allow_failures:
     - php: hhvm
 
-before-install:
+before_install:
   - sudo apt-get install gcc-multilib
 
 install:

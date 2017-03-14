@@ -121,19 +121,6 @@ abstract class BaseCompiler implements Compiler
     }
 
     /**
-     * Replace existing macros with given set.
-     *
-     * @param array $macros The macro name (key) with value (value).
-     * @return $this
-     */
-    public function setMacro(array $macros)
-    {
-        $this->macros = $macros;
-
-        return $this;
-    }
-
-    /**
      * Link static library.
      *
      * Library can be specified using name or as a path with lib name.
