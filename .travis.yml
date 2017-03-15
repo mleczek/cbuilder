@@ -14,6 +14,7 @@ before_install:
   - sudo apt-get install gcc-multilib
 
 install:
+  - export LD_LIBRARY_PATH=`pwd`/temp
   - composer install --no-interaction --no-suggest
 
 script:
