@@ -40,16 +40,16 @@ interface Compiler
      * @param string|string[] $files
      * @return $this
      */
-    public function setSourceFiles($files);
+    public function addSourceFiles($files);
 
     /**
-     * Set directories in which compiler
+     * Add directories in which compiler
      * will search for headers.
      *
      * @param string|string[] $dirs
      * @return $this
      */
-    public function setIncludeDirs($dirs);
+    public function addIncludeDirs($dirs);
 
     /**
      * Register macro constraint.
@@ -61,37 +61,43 @@ interface Compiler
     public function addMacro($name, $value);
 
     /**
-     * Replace existing macros with given set.
+     * Link static library.
      *
-     * @param array $macros The macro name (key) with value (value).
+     * Library can be specified using name or as a path with lib name.
+     * When path is provided then directory will be added to the linker
+     * to looks in that directory for library files.
+     *
+     * @param string|string[] $libFiles File(s) without extension.
+     * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function setMacro(array $macros);
+    public function addStaticLibrary($libFiles, $includeDirs = null);
 
     /**
-     * @param string|string[] $libFiles
+     * Link shared library.
+     *
+     * Library can be specified using name or as a path with lib name.
+     * When path is provided then directory will be added to the linker
+     * to looks in that directory for library files.
+     *
+     * @param string|string[] $libFiles File(s) without extension.
+     * @param string|string[]|null $includeDirs
      * @return $this
      */
-    public function linkStatic($libFiles);
+    public function addSharedLibrary($libFiles, $includeDirs = null);
 
     /**
-     * @param string|string[] $libFiles
-     * @return $this
-     */
-    public function linkDynamic($libFiles);
-
-    /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildExecutable($outputFile);
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildStaticLibrary($outputFile);
 
     /**
-     * @param string $outputFile
+     * @param string $outputFile File path without extension.
      */
     public function buildSharedLibrary($outputFile);
 
