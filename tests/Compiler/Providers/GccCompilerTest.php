@@ -3,16 +3,16 @@
 namespace Mleczek\CBuilder\Tests\Compiler\Providers;
 
 use Mleczek\CBuilder\Compiler\Providers\GccCompiler;
-use Mleczek\CBuilder\Environment\FileExtensions;
+use Mleczek\CBuilder\Environment\Conventions;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Tests\TestCase;
 
 class GccCompilerTest extends TestCase
 {
     /**
-     * @var FileExtensions
+     * @var Conventions
      */
-    protected $ext;
+    protected $fn;
 
     /**
      * @var Filesystem
@@ -26,9 +26,9 @@ class GccCompilerTest extends TestCase
 
     public function setUp()
     {
-        $this->ext = new FileExtensions();
         $this->fs = new Filesystem();
-        $this->gcc = new GccCompiler($this->fs, $this->ext);
+        $this->fn = new Conventions($this->fs);
+        $this->gcc = new GccCompiler($this->fs, $this->fn);
     }
 
     public function testBuildExecutable86()
@@ -123,4 +123,7 @@ class GccCompilerTest extends TestCase
         $this->assertEquals(0, $exitCode, 'Compiled program returned with non zero status code.');
         $this->assertEquals('Static and dynamic linking works!', $output[0]);
     }
+
+    // TODO: Debug symbols (test using gdb)
+    // TODO: Intermediate files
 }

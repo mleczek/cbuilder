@@ -4,10 +4,12 @@ namespace Mleczek\CBuilder\Compiler\Providers;
 
 use Mleczek\CBuilder\Compiler\Exceptions\CompilerNotFoundException;
 use Mleczek\CBuilder\Compiler\Exceptions\UnknownCompilerVersionException;
-use Mleczek\CBuilder\Environment\FileExtensions;
+use Mleczek\CBuilder\Environment\Conventions;
 use Mleczek\CBuilder\Environment\Filesystem;
 
 /**
+ * TODO: Optimization level (-O option flag)
+ *
  * @link https://gcc.gnu.org/ (Linux)
  * @link http://www.mingw.org/ (Windows)
  */
@@ -29,20 +31,20 @@ class GccCompiler extends BaseCompiler
     private $fs;
 
     /**
-     * @var FileExtensions
+     * @var Conventions
      */
-    private $ext;
+    private $conv;
 
     /**
      * GccCompiler constructor.
      *
      * @param Filesystem $fs
-     * @param FileExtensions $ext
+     * @param Conventions $conv
      */
-    public function __construct(Filesystem $fs, FileExtensions $ext)
+    public function __construct(Filesystem $fs, Conventions $conv)
     {
         $this->fs = $fs;
-        $this->ext = $ext;
+        $this->conv = $conv;
         $this->preapre();
     }
 
@@ -110,7 +112,7 @@ class GccCompiler extends BaseCompiler
             '-Wall', // all warnings messages
             $this->sourceFiles,
             self::ARCHITECTURE_OPTIONS[$this->architecture],
-            ['-o', $outputFile . $this->ext->executable()],
+            ['-o', $this->conv->getExePath($outputFile)],
             $this->debugSymbols ? '-g' : [],
             $this->intermediateFiles ? '-save-temps=obj' : [],
             $this->getMacrosCommandOptions(),
@@ -201,7 +203,7 @@ class GccCompiler extends BaseCompiler
             // "c" means to create a new archive,
             // and "s" means to write an index.
             'rcs',
-            $outputFile . $this->ext->staticLibrary(),
+            $this->conv->toStaticLibPath($outputFile),
             $objPath
         );
     }
@@ -238,7 +240,7 @@ class GccCompiler extends BaseCompiler
         $this->run('gcc',
             '-shared',
             self::ARCHITECTURE_OPTIONS[$this->architecture],
-            ['-o', $outputFile . $this->ext->sharedLibrary()],
+            ['-o', $this->conv->toSharedLibPath($outputFile)],
             $objPath
         );
     }
