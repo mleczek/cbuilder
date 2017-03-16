@@ -1,7 +1,8 @@
 # Package Manager for C++
 
-[![Build Status](https://travis-ci.org/mleczek/cbuilder.svg?branch=master)](https://travis-ci.org/mleczek/cbuilder)
-[![StyleCI](https://styleci.io/repos/80550254/shield?branch=master)](https://styleci.io/repos/80550254)
+[![Build Status](https://travis-ci.org/mleczek/cbuilder.svg?branch=gcc)](https://travis-ci.org/mleczek/cbuilder)
+[![StyleCI](https://styleci.io/repos/80550254/shield?branch=gcc)](https://styleci.io/repos/80550254)
+[![codecov](https://codecov.io/gh/mleczek/cbuilder/branch/gcc/graph/badge.svg)](https://codecov.io/gh/mleczek/cbuilder)
 
 The aim of this project is to create the tool like [composer](https://getcomposer.org/) or [npm](https://www.npmjs.com/), but for the c++. The image below shows basic usage example.
 

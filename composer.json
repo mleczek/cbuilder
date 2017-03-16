@@ -11,7 +11,7 @@
     ],
     "scripts": {
         "test": "phpunit",
-        "deploy": "php bin/phar-create.php"
+        "build": "php bin/phar-create.php"
     },
     "autoload": {
         "psr-4": {

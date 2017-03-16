@@ -6,17 +6,14 @@
     "compiler": {
         "gcc": "^5.0"
     },
-    "platform": "windows",
-    "arch": [
-        "x86",
-        "x64"
-    ],
+    "platform": ["windows"],
+    "arch": ["x86", "x64"],
     "linking": [
         "static",
         "dynamic"
     ],
     "dependencies": {
-        "org/package3": "dev-master static",
+        "org/package3": "dev-master:static",
         "org3/package": "~0.5.6"
     },
     "dev-dependencies": {
@@ -36,10 +33,10 @@
             "...",
             "..."
         ],
-        "after-build:windows,x32": "...",
+        "after-build:windows,x86": "...",
         "custom": "..."
     },
-    "repository": [
+    "repositories": [
         {
             "type": "file",
             "src": "path/to/repo"

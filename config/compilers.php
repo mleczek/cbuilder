@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+    /**
      * Artifacts output directory which contains
      * subdirectories representing architectures
      *
@@ -10,12 +10,12 @@ return [
      */
     'output' => 'build',
 
-    /*
+    /**
      * Compilers providers, not all compilers listed
      * here will be available in build process.
      */
     'providers' => [
-        'gcc' => \Mleczek\CBuilder\Compilers\Providers\GCC::class,
+        'gcc' => \Mleczek\CBuilder\Compiler\Providers\GccCompiler::class,
     ],
 
 ];

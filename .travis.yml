@@ -10,8 +10,15 @@ matrix:
   allow_failures:
     - php: hhvm
 
+before_install:
+  - sudo apt-get install gcc-multilib
+
 install:
+  - export LD_LIBRARY_PATH=`pwd`/temp
   - composer install --no-interaction --no-suggest
 
 script:
-  - vendor/bin/phpunit --verbose
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
