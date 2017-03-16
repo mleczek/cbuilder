@@ -10,8 +10,9 @@ use Mleczek\CBuilder\Environment\Filesystem;
 /**
  * TODO: Optimization level (-O option flag)
  *
- * @link https://gcc.gnu.org/ (Linux)
+ * @link https://gcc.gnu.org/
  * @link http://www.mingw.org/ (Windows)
+ * @link https://cygwin.com/ (Windows)
  */
 class GccCompiler extends BaseCompiler
 {
