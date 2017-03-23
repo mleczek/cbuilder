@@ -12,6 +12,7 @@ matrix:
 
 before_install:
   - sudo apt-get install gcc-multilib
+  - sudo apt-get install gdb
 
 install:
   - export LD_LIBRARY_PATH=`pwd`/temp
