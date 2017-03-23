@@ -7,6 +7,10 @@ use Mleczek\CBuilder\Environment\Conventions;
 use Mleczek\CBuilder\Environment\Filesystem;
 use Mleczek\CBuilder\Tests\TestCase;
 
+/**
+ * TODO: Skip tests if gcc/gdb not found
+ * TODO: Test compiling with intermediate files flag
+ */
 class GccCompilerTest extends TestCase
 {
     /**
@@ -124,6 +128,24 @@ class GccCompilerTest extends TestCase
         $this->assertEquals('Static and dynamic linking works!', $output[0]);
     }
 
-    // TODO: Debug symbols (test using gdb)
-    // TODO: Intermediate files
+    public function testDebugSymbols()
+    {
+        $this->fs->touchDir('temp');
+        $this->gcc->setArchitecture('x86')
+            ->addMacro('MESSAGE', '"Hello, World!"')
+            ->addSourceFiles('resources/fixtures/project/main.cpp')
+            ->withDebugSymbols()
+            ->buildExecutable('temp/output');
+
+        $exePath = str_replace('/', DIRECTORY_SEPARATOR, 'temp/output');
+        $dgbPath = str_replace('/', DIRECTORY_SEPARATOR, 'resources/fixtures/project/gdb.txt');
+
+        $output = [];
+        $exitCode = 1;
+        $command = "gdb $exePath --command=$dgbPath";
+        exec($command, $output, $exitCode);
+
+        $this->assertEquals(0, $exitCode, 'GDB returned with non zero status code.');
+        $this->assertContains('gdb-test-passed', implode(' ', $output));
+    }
 }

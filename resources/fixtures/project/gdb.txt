@@ -1,0 +1,5 @@
+break main
+run gdb-test-passed
+print argv[1]
+continue
+quit

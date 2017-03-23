@@ -5,6 +5,7 @@
 Following packages must be installed and registered in the system path:
 
 - gcc/ar
+- gdb
 
 ## Resources
 
