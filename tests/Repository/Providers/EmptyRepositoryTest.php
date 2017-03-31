@@ -24,4 +24,10 @@ class EmptyRepositoryTest extends TestCase
         $this->expectException(PackageNotFoundException::class);
         $repo->get('always/throws');
     }
+
+    public function testGetId()
+    {
+        $repo = new EmptyRepository();
+        $this->assertEquals(EmptyRepository::class, $repo->getId());
+    }
 }

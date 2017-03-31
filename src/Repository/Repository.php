@@ -13,6 +13,17 @@ use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 interface Repository
 {
     /**
+     * Get unique identifier. Instances of the repositories
+     * with the same type and source should return same identifier.
+     *
+     * Common pattern is to return identifier in format:
+     * <classNamespace>|<sourcePath>
+     *
+     * @return string
+     */
+    public function getId();
+
+    /**
      * @param string $package
      * @return bool
      */

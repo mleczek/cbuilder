@@ -14,6 +14,20 @@ use Mleczek\CBuilder\Package\Remote;
 class EmptyRepository implements Repository
 {
     /**
+     * Get unique identifier. Instances of the repositories
+     * with the same type and source should return same identifier.
+     *
+     * Common pattern is to return identifier in format:
+     * <classNamespace>|<sourcePath>
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return self::class;
+    }
+
+    /**
      * @param string $package
      * @return bool
      */

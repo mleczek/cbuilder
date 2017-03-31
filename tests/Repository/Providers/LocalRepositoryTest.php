@@ -107,4 +107,20 @@ class LocalRepositoryTest extends TestCase
     {
         $this->assertEquals('temp', $this->repository->getDir());
     }
+
+    public function testGetId()
+    {
+        $createRepo = function($src) {
+            return new LocalRepository(
+                $this->fs,
+                $this->packageFactory,
+                $this->versionFinderFactory,
+                $this->downloaderFactory,
+                $src
+            );
+        };
+
+        $this->assertEquals($createRepo('temp'), $createRepo('temp'));
+        $this->assertNotEquals($createRepo('temp'), $createRepo('temp/path'));
+    }
 }

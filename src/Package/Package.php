@@ -265,7 +265,7 @@ class Package
     }
 
     /**
-     * @return array Package name (key) with version and linking constraint (value).
+     * @return object[] Package name (key) with version and linking constraint (value).
      */
     public function getDevDependencies()
     {
