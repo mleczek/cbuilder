@@ -91,7 +91,7 @@ class Resolver
         );
 
         // Register each dependency in tree and list.
-        foreach($dependencies as $dependency) {
+        foreach ($dependencies as $dependency) {
             $remote = $repositories->find($dependency->name);
 
             $this->registerTree($remote, $dependency->version);
@@ -106,11 +106,12 @@ class Resolver
      * @param string $constraint
      * @see $list
      */
-    private function registerList(Remote $dependency, $constraint) {
+    private function registerList(Remote $dependency, $constraint)
+    {
         $packageName = $dependency->getPackage()->getName();
 
         // Initialize new dependency in the list.
-        if(!isset($this->list[$packageName])) {
+        if (!isset($this->list[$packageName])) {
             $this->list[$packageName] = (object)[
                 'remote' => $dependency,
                 'constraints' => [],
@@ -128,7 +129,7 @@ class Resolver
 
         // Register nested dependencies.
         $dependencies = $dependency->getPackage()->getDependencies();
-        foreach($dependencies as $dependency) {
+        foreach ($dependencies as $dependency) {
             $remote = $repositories->find($dependency->name);
 
             $this->registerList($remote, $dependency->version);
@@ -140,7 +141,8 @@ class Resolver
      * @param string $constraint
      * @see $tree
      */
-    private function registerTree(Remote $dependency, $constraint) {
+    private function registerTree(Remote $dependency, $constraint)
+    {
         $this->tree[] = $this->treeNodeFactory->makeTreeNode(null, $dependency, $constraint);
     }
 }

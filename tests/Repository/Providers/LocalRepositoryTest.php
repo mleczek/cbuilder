@@ -110,7 +110,7 @@ class LocalRepositoryTest extends TestCase
 
     public function testGetId()
     {
-        $createRepo = function($src) {
+        $createRepo = function ($src) {
             return new LocalRepository(
                 $this->fs,
                 $this->packageFactory,

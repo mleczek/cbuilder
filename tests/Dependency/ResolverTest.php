@@ -57,12 +57,12 @@ class ResolverTest extends TestCase
         $this->repositoriesFactory->method('hydrate')->willReturnOnConsecutiveCalls($collection, $nestedCollection);
 
         // first level repositories collection results
-        $collection->method('find')->willReturnCallback(function($packageName) {
+        $collection->method('find')->willReturnCallback(function ($packageName) {
             $package = $this->createMock(Package::class);
             $package->method('getName')->willReturn($packageName);
             $package->method('getRepositories')->willReturn([]); // any array to avoid errors
             $package->expects($this->never())->method('getDevDependencies'); // nested dev dependencies shouldn't be included
-            $package->method('getDependencies')->willReturnCallback(function() use($packageName) {
+            $package->method('getDependencies')->willReturnCallback(function () use ($packageName) {
                 // org/example contains nested dependency org/console
                 return $packageName != 'org/example' ? [] : [(object)[
                     'name' => 'org/console',
@@ -78,7 +78,7 @@ class ResolverTest extends TestCase
         });
 
         // second level repositories collection results
-        $nestedCollection->method('find')->willReturnCallback(function($packageName) {
+        $nestedCollection->method('find')->willReturnCallback(function ($packageName) {
             $package = $this->createMock(Package::class);
             $package->method('getName')->willReturn($packageName);
             $package->method('getRepositories')->willReturn([]); // any array to avoid errors
