@@ -5,13 +5,23 @@ namespace Mleczek\CBuilder\Dependency;
 use Mleczek\CBuilder\Dependency\Entities\Factory;
 use Mleczek\CBuilder\Package\Package;
 use Mleczek\CBuilder\Package\Remote;
+use Mleczek\CBuilder\Repository\Collection;
 use Mleczek\CBuilder\Repository\Exceptions\PackageNotFoundException;
 use Mleczek\CBuilder\Repository\Factory as RepositoriesFactory;
 use Mleczek\CBuilder\Dependency\Entities\Factory as TreeNodeFactory;
 
 /**
  * Resolve dependencies tree from cbuilder.json file
- * (include nested dependencies with loops detection)
+ * (include nested dependencies with loops detection).
+ *
+ * Repositories defined in the cbuilder.json file are skipped for the dependencies.
+ * This prevents packages names conflicts, realize the situation when A has 2 dependencies:
+ * B and C, the B also has the C dependency (but due to the specific repositories definition
+ * the C package is resolved from the other repository).
+ *
+ * There are 2 major use cases of the repositories:
+ * - to register private repository shared between all company packages,
+ * - and to improve development process experience.
  */
 class Resolver
 {
@@ -20,14 +30,14 @@ class Resolver
      *
      * @var object[] Each object contains remote, constraints and dependencies key.
      */
-    private $tree;
+    private $tree = [];
 
     /**
      * Dependencies list.
      *
      * @var object[string] Package name (key) with object (value) containing remote and constraints key.
      */
-    private $list;
+    private $list = [];
 
     /**
      * @var RepositoriesFactory
@@ -38,6 +48,13 @@ class Resolver
      * @var TreeNodeFactory
      */
     private $treeNodeFactory;
+
+    /**
+     * Repositories for the latest resolved package.
+     *
+     * @var Collection
+     */
+    private $repositories;
 
     /**
      * Resolver constructor.
@@ -81,7 +98,7 @@ class Resolver
         // Get repositories only for this package
         // in which dependencies will be searched.
         $plainRepositories = $package->getRepositories();
-        $repositories = $this->repositoriesFactory->hydrate($plainRepositories);
+        $this->repositories = $this->repositoriesFactory->hydrate($plainRepositories);
 
         // For root package always get all
         // dependencies including dev ones.
@@ -92,7 +109,7 @@ class Resolver
 
         // Register each dependency in tree and list.
         foreach ($dependencies as $dependency) {
-            $remote = $repositories->find($dependency->name);
+            $remote = $this->repositories->find($dependency->name);
 
             $this->registerTree($remote, $dependency->version);
             $this->registerList($remote, $dependency->version);
@@ -122,15 +139,10 @@ class Resolver
         $entry = $this->list[$packageName];
         $entry->constraints[] = $constraint;
 
-        // Get repositories only for this package
-        // in which dependencies will be searched.
-        $plainRepositories = $dependency->getPackage()->getRepositories();
-        $repositories = $this->repositoriesFactory->hydrate($plainRepositories);
-
         // Register nested dependencies.
         $dependencies = $dependency->getPackage()->getDependencies();
         foreach ($dependencies as $dependency) {
-            $remote = $repositories->find($dependency->name);
+            $remote = $this->repositories->find($dependency->name);
 
             $this->registerList($remote, $dependency->version);
         }
@@ -143,6 +155,6 @@ class Resolver
      */
     private function registerTree(Remote $dependency, $constraint)
     {
-        $this->tree[] = $this->treeNodeFactory->makeTreeNode(null, $dependency, $constraint);
+        $this->tree[] = $this->treeNodeFactory->makeTreeNode($this->repositories, null, $dependency, $constraint);
     }
 }

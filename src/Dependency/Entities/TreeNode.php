@@ -5,6 +5,7 @@ namespace Mleczek\CBuilder\Dependency\Entities;
 use Mleczek\CBuilder\Dependency\Entities\Factory;
 use Mleczek\CBuilder\Dependency\Exceptions\DependenciesLoopException;
 use Mleczek\CBuilder\Package\Remote;
+use Mleczek\CBuilder\Repository\Collection;
 use Mleczek\CBuilder\Repository\Factory as RepositoriesFactory;
 
 class TreeNode
@@ -27,12 +28,7 @@ class TreeNode
     /**
      * @var TreeNode[]
      */
-    protected $dependecies = [];
-
-    /**
-     * @var RepositoriesFactory
-     */
-    private $repositoriesFactory;
+    protected $dependencies = [];
 
     /**
      * @var Factory
@@ -40,20 +36,24 @@ class TreeNode
     private $factory;
 
     /**
+     * @var Collection
+     */
+    private $repositories;
+
+    /**
      * TreeNode constructor.
      *
-     * @param RepositoriesFactory $repositoriesFactory
      * @param Factory $factory
+     * @param Collection $repositories Repositories in which dependencies will be searched.
      * @param TreeNode|null $parent
      * @param Remote $remote
      * @param string $constraint
-     * @throws DependenciesLoopException
      */
-    public function __construct(RepositoriesFactory $repositoriesFactory, Factory $factory, TreeNode $parent = null, Remote $remote, $constraint)
+    public function __construct(Factory $factory, Collection $repositories, TreeNode $parent = null, Remote $remote, $constraint)
     {
-        $this->repositoriesFactory = $repositoriesFactory;
         $this->factory = $factory;
 
+        $this->repositories = $repositories;
         $this->parent = $parent;
         $this->remote = $remote;
         $this->constraint = $constraint;
@@ -63,23 +63,17 @@ class TreeNode
     /**
      * Fill in dependencies property.
      *
-     * @see $dependecies
+     * @see $dependencies
      * @throws DependenciesLoopException
      */
     public function resolveDependencies()
     {
         $this->throwIfDependencyLoopExists();
-
-        // Get repositories only for this package
-        // in which dependencies will be searched.
-        $plainRepositories = $this->remote->getPackage()->getRepositories();
-        $repositories = $this->repositoriesFactory->hydrate($plainRepositories);
-
         // Register each dependency in result object.
         $dependencies = $this->remote->getPackage()->getDependencies();
         foreach ($dependencies as $packageName => $constraint) {
-            $remote = $repositories->find($packageName);
-            $this->dependecies[] = $this->factory->makeTreeNode($this, $remote, $constraint);
+            $remote = $this->repositories->find($packageName);
+            $this->dependencies[] = $this->factory->makeTreeNode($this->repositories, $this, $remote, $constraint);
         }
     }
 
@@ -91,14 +85,11 @@ class TreeNode
         $parent = $this->getParent();
         while (!is_null($parent)) {
             $packageName = $this->getRemote()->getPackage()->getName();
-            $repositoryId = $this->getRemote()->getRepository()->getId();
-
             $parentPackageName = $parent->getRemote()->getPackage()->getName();
-            $parentRepositoryId = $parent->getRemote()->getRepository()->getId();
 
-            if ($packageName === $parentPackageName && $repositoryId === $parentRepositoryId) {
+            if ($packageName === $parentPackageName) {
                 $parentPackageName = $this->getParent()->getRemote()->getPackage()->getName();
-                throw new DependenciesLoopException("Detected dependencies loop: $packageName [-> ...] -> $parentPackageName -> $packageName (in '$repositoryId' repository)");
+                throw new DependenciesLoopException("Detected dependencies loop: $packageName [-> ...] -> $parentPackageName -> $packageName");
             }
 
             $parent = $parent->getParent();
@@ -132,8 +123,8 @@ class TreeNode
     /**
      * @return TreeNode[]
      */
-    public function getDependecies()
+    public function getDependencies()
     {
-        return $this->dependecies;
+        return $this->dependencies;
     }
 }

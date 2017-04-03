@@ -15,9 +15,9 @@ use Mleczek\CBuilder\Tests\TestCase;
 class TreeNodeTest extends TestCase
 {
     /**
-     * @var RepositoriesFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var Collection|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $repositoriesFactory;
+    protected $repositories;
 
     /**
      * @var Factory|\PHPUnit_Framework_MockObject_MockObject
@@ -41,7 +41,7 @@ class TreeNodeTest extends TestCase
 
     public function setUp()
     {
-        $this->repositoriesFactory = $this->createMock(RepositoriesFactory::class);
+        $this->repositories = $this->createMock(Collection::class);
         $this->factory = $this->createMock(Factory::class);
         $this->parent = $this->createMock(TreeNode::class);
         $this->remote = $this->createMock(Remote::class);
@@ -63,22 +63,15 @@ class TreeNodeTest extends TestCase
         $package->method('getName')
             ->willReturn('org/package');
 
-        $repository = $this->createMock(Repository::class);
-        $repository->method('getId')
-            ->willReturn('some_string');
-
         // Return same package and repository for node and parent node.
         $this->remote->method('getPackage')
             ->willReturn($package);
 
-        $this->remote->method('getRepository')
-            ->willReturn($repository);
-
         // Test if "loop" detection (self-reference).
         $this->expectException(DependenciesLoopException::class);
         $treeNode = new TreeNode(
-            $this->repositoriesFactory,
             $this->factory,
+            $this->repositories,
             $this->parent,
             $this->remote,
             $this->constraint
@@ -95,20 +88,8 @@ class TreeNodeTest extends TestCase
             ->method('getDependencies')
             ->willReturn($dependencies);
 
-        // Define package array repositories (used only to pass to other mock).
-        $plainRepositories = ['repo_1', 'repo_2'];
-        $package->expects($this->once())
-            ->method('getRepositories')
-            ->willReturn($plainRepositories);
-
-        // Convert array repositories to collection of true repositories.
-        $repositories = $this->createMock(Collection::class);
-        $this->repositoriesFactory->method('hydrate')
-            ->with($plainRepositories)
-            ->willReturn($repositories);
-
         // For each dependency return any remote class.
-        $repositories->expects($this->exactly(3))
+        $this->repositories->expects($this->exactly(3))
             ->method('find')
             ->withConsecutive(['a'], ['b'], ['c'])
             ->willReturn($this->createMock(Remote::class));
@@ -122,13 +103,13 @@ class TreeNodeTest extends TestCase
             ->willReturnOnConsecutiveCalls('x', 'y', 'z');
 
         $treeNode = new TreeNode(
-            $this->repositoriesFactory,
             $this->factory,
+            $this->repositories,
             null,
             $this->remote,
             $this->constraint
         );
 
-        $this->assertEquals(['x', 'y', 'z'], $treeNode->getDependecies());
+        $this->assertEquals(['x', 'y', 'z'], $treeNode->getDependencies());
     }
 }
