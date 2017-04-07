@@ -15,4 +15,10 @@ return [
      */
     'output_dir' => 'cmodules',
 
+    /**
+     * Directory in which additional information
+     * about installed packages are stored.
+     */
+    'meta_dir' => '.meta',
+
 ];

@@ -199,6 +199,46 @@ class Filesystem
     }
 
     /**
+     * Search sub-directories for the directory.
+     *
+     * @param string $dir
+     * @param int $depth Minimum directory depth.
+     * @return \string[]
+     * @throws InvalidPathException Directory not exists.
+     */
+    public function listDirs($dir, $depth = 1)
+    {
+        if (!$this->existsDir($dir)) {
+            throw new InvalidPathException("Cannot list sub-directories because the '$dir' directory not exists.");
+        }
+
+        if($depth <= 0) {
+            return [];
+        }
+
+        $results = [];
+        foreach (scandir($dir) as $name) {
+            if ($name == '.' || $name == '..') {
+                continue;
+            }
+
+            $path = $this->path($dir, $name);
+            if ($this->isDir($path)) {
+                // And merge results from sub-directories.
+                $subResults = $this->listDirs($path, $depth - 1);
+                $results = array_merge($results, $subResults);
+
+                // Add result if reached required depth.
+                if($depth == 1) {
+                    $results[] = $path;
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Get path relative to the working directory.
      *
      * @param string[] ...$parts

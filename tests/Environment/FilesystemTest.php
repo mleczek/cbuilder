@@ -278,6 +278,45 @@ class FilesystemTest extends TestCase
         $this->fs->listFiles('temp');
     }
 
+    public function testListDirs()
+    {
+        $files = [
+            'temp/lorem/lipsum/dolor.txt',
+            'temp/lorem/dolor.txt',
+            'temp/lorem/dolor/dolor.md',
+            'temp/lorem/lipsum/dolor/main.c',
+            'temp/lorem/dol0r.txt',
+            'temp/lipsum/lorem/dolor.cpp',
+            'temp/lipsum/lorem/dolor.cpp',
+            'temp/dolor/file.txt',
+        ];
+
+        // Create files and get array of paths matching pattern.
+        foreach ($files as $file) {
+            $this->fs->touchFile($file);
+        }
+
+        // Default depth.
+        $matches = ['temp/lorem', 'temp/lipsum', 'temp/dolor'];
+        $result = $this->fs->listDirs('temp');
+
+        $this->assertTrue(array_diff($result, $matches) == []);
+        $this->assertTrue(array_diff($matches, $result) == []);
+
+        // Custom depth.
+        $matches = ['temp/lorem/lipsum', 'temp/lorem/dolor', 'temp/lipsum/lorem'];
+        $result = $this->fs->listDirs('temp', 2);
+
+        $this->assertTrue(array_diff($result, $matches) == []);
+        $this->assertTrue(array_diff($matches, $result) == []);
+    }
+
+    public function testListDirsNonExistingDir()
+    {
+        $this->expectException(InvalidPathException::class);
+        $this->fs->listDirs('temp');
+    }
+
     /**
      * TODO: Debug on Linux to detect the issues
      *
