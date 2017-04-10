@@ -212,7 +212,7 @@ class Filesystem
             throw new InvalidPathException("Cannot list sub-directories because the '$dir' directory not exists.");
         }
 
-        if($depth <= 0) {
+        if ($depth <= 0) {
             return [];
         }
 
@@ -229,7 +229,7 @@ class Filesystem
                 $results = array_merge($results, $subResults);
 
                 // Add result if reached required depth.
-                if($depth == 1) {
+                if ($depth == 1) {
                     $results[] = $path;
                 }
             }

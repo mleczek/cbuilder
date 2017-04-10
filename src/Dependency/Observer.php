@@ -56,7 +56,7 @@ class Observer
      */
     private function listLockedPackages()
     {
-        $installedLockDir = $this->config->get('modules.output_dir') .'/'. $this->config->get('modules.meta_dir');
+        $installedLockDir = $this->config->get('modules.output_dir') . '/' . $this->config->get('modules.meta_dir');
         $installed = $this->factory->makeFromFileOrEmpty("$installedLockDir/installed.lock"); // TODO: Move installed.lock to config
 
         return $installed->packages();
@@ -68,7 +68,7 @@ class Observer
     private function listDownloadedPackages()
     {
         $outputDir = $this->config->get('modules.output_dir');
-        $dir2package = function($dir) use ($outputDir) {
+        $dir2package = function ($dir) use ($outputDir) {
             return substr($dir, strlen("$outputDir/"));
         };
 
@@ -96,7 +96,7 @@ class Observer
         );
 
         // Mark other packages as installed.
-        $this->installed = array_filter($locked, function($value, $key) use ($downloaded) {
+        $this->installed = array_filter($locked, function ($value, $key) use ($downloaded) {
             return array_search($key, $downloaded) !== false;
         }, ARRAY_FILTER_USE_BOTH);
 
