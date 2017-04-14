@@ -124,4 +124,15 @@ class Observer
     {
         return $this->installed;
     }
+
+    /**
+     * Check whether given package is installed.
+     *
+     * @param string $package
+     * @return bool
+     */
+    public function hasInstalled($package)
+    {
+        return isset($this->installed[$package]);
+    }
 }

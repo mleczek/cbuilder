@@ -71,6 +71,7 @@ class ObserverTest extends TestCase
         $this->observer->observe();
         $this->assertEquals(['org/package'], $this->observer->getAmbiguous());
         $this->assertEquals([], $this->observer->getInstalled());
+        $this->assertFalse($this->observer->hasInstalled('org/package'));
     }
 
     public function testInstalledButNotLocked()
@@ -103,5 +104,6 @@ class ObserverTest extends TestCase
         $this->observer->observe();
         $this->assertEquals(['org/locked', 'org/installed'], $this->observer->getAmbiguous());
         $this->assertEquals(['org/package' => '1.3'], $this->observer->getInstalled());
+        $this->assertTrue($this->observer->hasInstalled('org/package'));
     }
 }

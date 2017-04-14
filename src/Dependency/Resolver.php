@@ -35,7 +35,7 @@ class Resolver
     /**
      * Dependencies list.
      *
-     * @var object[string] Package name (key) with object (value) containing remote and constraints key.
+     * @var object[] Package name (key) with object (value) containing remote and constraints key.
      */
     private $list = [];
 
@@ -81,7 +81,7 @@ class Resolver
     /**
      * Get dependencies list.
      *
-     * @return object[string] Each object contains remote and constraints key.
+     * @return object[] Each object contains remote and constraints key.
      */
     public function getList()
     {
