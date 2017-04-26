@@ -18,6 +18,9 @@ install:
   - export LD_LIBRARY_PATH=`pwd`/temp
   - composer install --no-interaction --no-suggest
 
+before_script:
+  - phpenv config-add .travis.php.ini
+
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
 

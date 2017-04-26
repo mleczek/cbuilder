@@ -250,7 +250,7 @@ class Filesystem
         $path = implode('/', $parts);
 
         // Detect and temporary remove protocol from path.
-        if(preg_match('#^([a-z]+):[\\\/]{2}#', $path, $matches) == 1) {
+        if (preg_match('#^([a-z]+):[\\\/]{2}#', $path, $matches) == 1) {
             $path = substr($path, strlen($matches[0]));
             $protocol = $matches[1] . '://';
         }

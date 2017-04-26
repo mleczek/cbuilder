@@ -12,12 +12,16 @@ class PharTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
+        if (ini_get('phar.readonly') == true) {
+            self::markTestSkipped('Creating phar disabled, set "phar.readonly = Off" in php.ini.');
+        }
+
         $fs = new Filesystem();
 
         $pharFile = $fs->path(CBUILDER_DIR, 'bin/cbuilder.phar');
         $fs->removeFile($pharFile);
 
-        exec('cd "' . CBUILDER_DIR . '" && composer run-script build');
+        exec('php "' . CBUILDER_DIR . '/bin/phar-create.php"; chmod +x "' . $pharFile . '"');
         self::assertFileExists($pharFile);
     }
 
