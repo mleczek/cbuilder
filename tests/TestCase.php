@@ -7,8 +7,6 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
-    const ROOT_DIR = __DIR__ . '/..';
-
     /**
      * Called before the first test of this test class is run.
      */

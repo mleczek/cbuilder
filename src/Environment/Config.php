@@ -60,13 +60,13 @@ class Config
         $filename = array_shift($parts);
 
         // Check whether config file exists.
-        $file = $this->fs->path($this->dir, $filename);
+        $file = $this->fs->path($this->dir, "$filename.php");
         if (!$this->fs->existsFile($file)) {
             return false;
         }
 
         // Find config value using dot notation.
-        $result = $this->fs->readFile($file);
+        $result = require $file;
         foreach ($parts as $part) {
             if (!isset($result[$part])) {
                 return false;
@@ -93,10 +93,13 @@ class Config
         $filename = array_shift($parts);
 
         // Read config file.
-        $file = $this->fs->path($this->dir, $filename);
-        $result = $this->fs->readFile($file);
+        $file = $this->fs->path($this->dir, "$filename.php");
+        if (!$this->fs->existsFile($file)) {
+            throw new InvalidPathException("The '$file' config file doesn't exists.");
+        }
 
         // Find config value using dot notation.
+        $result = require $file;
         foreach ($parts as $part) {
             if (!isset($result[$part])) {
                 throw new ConfigNotExistsException("Cannot find the '$part' part of a '$key' config key.");

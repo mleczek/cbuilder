@@ -25,7 +25,7 @@ class FilesystemTest extends TestCase
     public function testWorkingDir()
     {
         $actual = $this->fs->workingDir();
-        $expected = realpath(self::ROOT_DIR);
+        $expected = realpath(CBUILDER_DIR);
 
         $this->assertInternalType('string', $actual);
         $this->assertEquals($expected, $actual);
@@ -43,6 +43,15 @@ class FilesystemTest extends TestCase
     {
         $actual = $this->fs->path('lorem', '\\lipsum//dolor');
         $expected = 'lorem/lipsum/dolor';
+
+        $this->assertInternalType('string', $actual);
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testPathProtocole()
+    {
+        $actual = $this->fs->path('phar://', '/lorem\\//lipsum.txt');
+        $expected = 'phar:///lorem/lipsum.txt';
 
         $this->assertInternalType('string', $actual);
         $this->assertEquals($expected, $actual);

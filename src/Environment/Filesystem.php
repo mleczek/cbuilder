@@ -246,10 +246,19 @@ class Filesystem
      */
     public function path(...$parts)
     {
+        $protocol = '';
         $path = implode('/', $parts);
-        $path = preg_replace('#[\\\/]+#', '/', $path);
 
-        return $path;
+        // Detect and temporary remove protocol from path.
+        if(preg_match('#^([a-z]+):[\\\/]{2}#', $path, $matches) == 1) {
+            $path = substr($path, strlen($matches[0]));
+            $protocol = $matches[1] . '://';
+        }
+
+        // Remove all groups of '/' or '\' symbols to single '/' symbol.
+        $path = preg_replace('#([\\\/]+)#', '/', $path);
+
+        return $protocol . $path;
     }
 
     /**

@@ -16,8 +16,8 @@ class PackagePrototypeTest extends TestCase
     {
         $validator = new Validator(new ThirdPartyValidator());
         $validator->validate(
-            file_get_contents(self::ROOT_DIR . '/resources/package.prototype.json'),
-            file_get_contents(self::ROOT_DIR . '/resources/package.schema.json')
+            file_get_contents(CBUILDER_DIR . '/resources/package.prototype.json'),
+            file_get_contents(CBUILDER_DIR . '/resources/package.schema.json')
         );
     }
 }

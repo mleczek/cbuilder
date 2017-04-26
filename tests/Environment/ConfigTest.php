@@ -25,16 +25,11 @@ class ConfigTest extends TestCase
 
     public function testDotNotation()
     {
-        $fs = $this->createPartialMock(Filesystem::class, ['existsDir', 'existsFile', 'readFile']);
-        $fs->method('existsDir')->willReturn(true);
+        $fs = new Filesystem();
+        $fs->touchDir('temp');
 
-        $fs->method('existsFile')
-            ->with('temp/file')
-            ->willReturn(true);
-
-        $fs->method('readFile')
-            ->with('temp/file')
-            ->willReturn($this->sample);
+        $content = '<?php return ' . var_export($this->sample, true) . ';';
+        $fs->writeFile('temp/file.php', $content);
 
         $config = new Config($fs);
         $config->setDir('temp');
@@ -59,8 +54,11 @@ class ConfigTest extends TestCase
 
     public function testHasWithNotExistingFile()
     {
-        $fs = $this->createPartialMock(Filesystem::class, []);
+        $fs = new Filesystem();
+        $fs->touchDir('temp');
+
         $config = new Config($fs);
+        $config->setDir('temp');
 
         $this->assertFalse($config->has('file.key'));
     }
@@ -79,22 +77,28 @@ class ConfigTest extends TestCase
 
     public function testHasWithNonExistingKey()
     {
-        $fs = $this->createPartialMock(Filesystem::class, ['existsFile', 'readFile']);
-        $fs->method('existsFile')->willReturn(true);
-        $fs->method('readFile')->willReturn($this->sample);
+        $fs = new Filesystem();
+        $fs->touchDir('temp');
+
+        $content = '<?php return ' . var_export($this->sample, true) . ';';
+        $fs->writeFile('temp/file.php', $content);
 
         $config = new Config($fs);
+        $config->setDir('temp');
         $this->assertTrue($config->has('file.nested'));
         $this->assertFalse($config->has('file.nested.not-exists'));
     }
 
     public function testGetWithNonExistingKey()
     {
-        $fs = $this->createPartialMock(Filesystem::class, ['existsFile', 'readFile']);
-        $fs->method('existsFile')->willReturn(true);
-        $fs->method('readFile')->willReturn($this->sample);
+        $fs = new Filesystem();
+        $fs->touchDir('temp');
+
+        $content = '<?php return ' . var_export($this->sample, true) . ';';
+        $fs->writeFile('temp/file.php', $content);
 
         $config = new Config($fs);
+        $config->setDir('temp');
         $this->expectException(ConfigNotExistsException::class);
         $config->get('file.nested.not-exists');
     }

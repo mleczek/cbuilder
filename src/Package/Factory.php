@@ -52,10 +52,15 @@ class Factory
 
     /**
      * @return Package
+     * @throws InvalidPathException
      */
     public function makeCurrent()
     {
-        return $this->makeFromDir('.');
+        try {
+            return $this->makeFromDir('.');
+        } catch (\Exception $e) {
+            throw new InvalidPathException("Working directory is not recognized as the cbuilder package, check path or create new package using 'cbuilder init' command.");
+        }
     }
 
     /**
