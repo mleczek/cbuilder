@@ -21,7 +21,8 @@ class PharTest extends TestCase
         $pharFile = $fs->path(CBUILDER_DIR, 'bin/cbuilder.phar');
         $fs->removeFile($pharFile);
 
-        exec('php "' . CBUILDER_DIR . '/bin/phar-create.php"; chmod +x "' . $pharFile . '"');
+        exec('php bin/phar-create.php');
+        exec('chmod +x "' . $pharFile . '"');
         self::assertFileExists($pharFile);
     }
 
