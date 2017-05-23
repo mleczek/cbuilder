@@ -21,4 +21,10 @@ return [
      */
     'meta_dir' => '.meta',
 
+    /**
+     * File in which information about installed packages are stored
+     * (file is placed inside <output_dir>/<meta_dir> directory).
+     */
+    'installed_lock' => 'installed.lock',
+
 ];
