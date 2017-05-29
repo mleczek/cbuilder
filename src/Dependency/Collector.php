@@ -92,8 +92,7 @@ class Collector
             // Fail if no available versions found.
             if (empty($versions)) {
                 $packageName = $item->remote->getPackage()->getName();
-                $constraintsStr = implode("', '", $constraints);
-                throw new DependencyNotAvailableException("Cannot find '$packageName' package meeting given constraints: '$constraintsStr'.");
+                throw new DependencyNotAvailableException("Cannot find '$packageName' package meeting given constraints: '$constraints'.");
             }
 
             // Sort versions and bind the newest one.
