@@ -109,19 +109,56 @@ class Collector
      *
      * @see resolver::getList
      * @param object $item
-     * @return string[]
+     * @return string
      */
     private function resolveConstraints($item)
     {
         $constraints = $item->constraints;
         $packageName = $item->remote->getPackage()->getName();
 
-        if ($this->observer->hasInstalled($packageName)) {
-            $currentVersion = $this->observer->getInstalled()[$packageName];
-            $constraints = array_merge($constraints, [">=$currentVersion"]);
+        // If package isn't currently installed then
+        // we just use resolved constraints from other packages.
+        if (!$this->observer->hasInstalled($packageName)) {
+            return $constraints;
         }
 
-        return $constraints;
+        // Get currently installed version.
+        $currentVersion = $this->observer->getInstalled()[$packageName];
+
+        // Force to use specified version if root package json still
+        // requires this version of package (guarantee repeatable installs).
+        if($this->isPackageVersionRequired($packageName, $currentVersion)) {
+            return $currentVersion;
+        }
+
+        // If it is possible then keep the current version.
+        $joinedConstraints = implode(' ', $constraints);
+        if($this->comparator->satisfies($currentVersion, $joinedConstraints)) {
+            return $currentVersion;
+        }
+
+        // In other way allow only upgrades (downgrades aren't allowed).
+        return "$joinedConstraints >=$currentVersion";
+    }
+
+    /**
+     * Check whether provided package version is required to be used
+     * (project package json not changed and requires specified version).
+     *
+     * @param string $packageName
+     * @param string $version
+     * @return bool True if provided package version must be used, false otherwise.
+     */
+    private function isPackageVersionRequired($packageName, $version)
+    {
+        $dependencies = $this->factory->makeCurrent()->getDependencies();
+        foreach($dependencies as $dependency) {
+            if($dependency->name == $packageName) {
+                return $this->comparator->satisfies($version, $dependency->version);
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -143,6 +180,11 @@ class Collector
 
         // Update package from older to newest version.
         if ($this->observer->hasInstalled($packageName)) {
+            // Skip if this is the same version.
+            if($this->observer->getInstalled()[$packageName] === $version) {
+                return;
+            }
+
             $this->outdated[$packageName] = $version;
             return;
         }

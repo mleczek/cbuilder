@@ -36,6 +36,11 @@ class CollectorTest extends TestCase
     protected $comparator;
 
     /**
+     * @var Package|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $package;
+
+    /**
      * @var Collector
      */
     protected $collector;
@@ -49,8 +54,8 @@ class CollectorTest extends TestCase
         $this->comparator->method('sort')->willReturnArgument(0);
 
         // Required only to not throw exceptions by calling tests.
-        $package = $this->createMock(Package::class);
-        $this->factory->method('makeCurrent')->willReturn($package);
+        $this->package = $this->createMock(Package::class);
+        $this->factory->method('makeCurrent')->willReturn($this->package);
 
         $this->collector = new Collector($this->observer, $this->resolver, $this->factory, $this->comparator);
     }
@@ -58,16 +63,18 @@ class CollectorTest extends TestCase
     /**
      * @param string $name
      * @param string[] $versions
-     * @param string[] $constraints
+     * @param string $constraints
      * @return object Contains remote and constraints keys.
      */
-    private function createResolverListItem($name, array $versions, array $constraints = ['*'])
+    private function createResolverListItem($name, array $versions, $constraints = '*')
     {
         $package = $this->createMock(Package::class);
         $package->method('getName')->willReturn($name);
 
         $finder = $this->createMock(Finder::class);
-        $finder->method('getSatisfiedBy')->willReturn($versions);
+        if($constraints === '*') {
+            $finder->method('getSatisfiedBy')->with($constraints)->willReturn($versions);
+        }
 
         $remote = $this->createMock(Remote::class);
         $remote->method('getPackage')->willReturn($package);
@@ -101,18 +108,72 @@ class CollectorTest extends TestCase
     public function testUpdateToNewestVersion()
     {
         $listItem = $this->createResolverListItem('org/package', ['1.0.0', '2.5.7'], ['^2.3']);
+        $this->package->method('getDependencies')->willReturn([(object)[
+            'name' => 'org/package', 'version' => '2.*', 'linking' => ['static', 'dynamic']
+        ]]);
 
         $this->observer->method('hasInstalled')->with('org/package')->willReturn(true);
         $this->observer->method('getInstalled')->willReturn(['org/package' => '1.0.0']);
         $this->observer->method('getAmbiguous')->willReturn([]);
         $this->resolver->method('getList')->willReturn([$listItem]);
 
+        $this->comparator->method('satisfies')
+            ->withConsecutive(['1.0.0', '2.*'], ['1.0.0', '^2.3'])
+            ->willReturnOnConsecutiveCalls(false, false);
+
         $listItem->remote->getVersionFinder()->method('getSatisfiedBy')
-            ->with(['^2.3', '>=1.0.0'])->willReturn(['2.5.7']);
+            ->with('^2.3 >=1.0.0')->willReturn(['2.5.7']);
 
         $this->collector->collect();
         $this->assertEquals([], $this->collector->getRedundant());
         $this->assertEquals(['org/package' => '2.5.7'], $this->collector->getOutdated());
+        $this->assertEquals([], $this->collector->getMissing());
+    }
+
+    public function testKeepInstalledVersion()
+    {
+        $listItem = $this->createResolverListItem('org/package', ['0.6.2', '1.0.0', '2.5.7'], ['>0.6']);
+        $this->package->method('getDependencies')->willReturn([(object)[
+            'name' => 'org/package', 'version' => '>=1.0', 'linking' => ['static', 'dynamic']
+        ]]);
+
+        $this->observer->method('hasInstalled')->with('org/package')->willReturn(true);
+        $this->observer->method('getInstalled')->willReturn(['org/package' => '1.0.0']);
+        $this->observer->method('getAmbiguous')->willReturn([]);
+        $this->resolver->method('getList')->willReturn([$listItem]);
+
+        $this->comparator->method('satisfies')
+            ->with('1.0.0', '>=1.0')->willreturn(true);
+
+        $listItem->remote->getVersionFinder()->method('getSatisfiedBy')
+            ->with('1.0.0')->willReturn(['1.0.0']);
+
+        $this->collector->collect();
+        $this->assertEquals([], $this->collector->getRedundant());
+        $this->assertEquals([], $this->collector->getOutdated());
+        $this->assertEquals([], $this->collector->getMissing());
+    }
+
+    public function testKeepInstalledVersionAlt()
+    {
+        $listItem = $this->createResolverListItem('org/package', ['0.6.2', '1.0.0', '2.5.7'], ['>0.6']);
+        $this->package->method('getDependencies')->willReturn([]);
+
+        $this->observer->method('hasInstalled')->with('org/package')->willReturn(true);
+        $this->observer->method('getInstalled')->willReturn(['org/package' => '1.0.0']);
+        $this->observer->method('getAmbiguous')->willReturn([]);
+        $this->resolver->method('getList')->willReturn([$listItem]);
+
+        $this->comparator->method('satisfies')
+            ->withConsecutive(['1.0.0', '>0.6'])
+            ->willReturnOnConsecutiveCalls(true, true);
+
+        $listItem->remote->getVersionFinder()->method('getSatisfiedBy')
+            ->with('1.0.0')->willReturn(['1.0.0']);
+
+        $this->collector->collect();
+        $this->assertEquals([], $this->collector->getRedundant());
+        $this->assertEquals([], $this->collector->getOutdated());
         $this->assertEquals([], $this->collector->getMissing());
     }
 
