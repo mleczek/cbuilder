@@ -72,7 +72,7 @@ class CollectorTest extends TestCase
         $package->method('getName')->willReturn($name);
 
         $finder = $this->createMock(Finder::class);
-        if($constraints === '*') {
+        if ($constraints === '*') {
             $finder->method('getSatisfiedBy')->with($constraints)->willReturn($versions);
         }
 
@@ -109,7 +109,7 @@ class CollectorTest extends TestCase
     {
         $listItem = $this->createResolverListItem('org/package', ['1.0.0', '2.5.7'], ['^2.3']);
         $this->package->method('getDependencies')->willReturn([(object)[
-            'name' => 'org/package', 'version' => '2.*', 'linking' => ['static', 'dynamic']
+            'name' => 'org/package', 'version' => '2.*', 'linking' => ['static', 'dynamic'],
         ]]);
 
         $this->observer->method('hasInstalled')->with('org/package')->willReturn(true);
@@ -134,7 +134,7 @@ class CollectorTest extends TestCase
     {
         $listItem = $this->createResolverListItem('org/package', ['0.6.2', '1.0.0', '2.5.7'], ['>0.6']);
         $this->package->method('getDependencies')->willReturn([(object)[
-            'name' => 'org/package', 'version' => '>=1.0', 'linking' => ['static', 'dynamic']
+            'name' => 'org/package', 'version' => '>=1.0', 'linking' => ['static', 'dynamic'],
         ]]);
 
         $this->observer->method('hasInstalled')->with('org/package')->willReturn(true);

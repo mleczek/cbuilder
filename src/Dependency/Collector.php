@@ -126,13 +126,13 @@ class Collector
 
         // Force to use specified version if root package json still
         // requires this version of package (guarantee repeatable installs).
-        if($this->isPackageVersionRequired($packageName, $currentVersion)) {
+        if ($this->isPackageVersionRequired($packageName, $currentVersion)) {
             return $currentVersion;
         }
 
         // If it is possible then keep the current version.
         $joinedConstraints = implode(' ', $constraints);
-        if($this->comparator->satisfies($currentVersion, $joinedConstraints)) {
+        if ($this->comparator->satisfies($currentVersion, $joinedConstraints)) {
             return $currentVersion;
         }
 
@@ -151,8 +151,8 @@ class Collector
     private function isPackageVersionRequired($packageName, $version)
     {
         $dependencies = $this->factory->makeCurrent()->getDependencies();
-        foreach($dependencies as $dependency) {
-            if($dependency->name == $packageName) {
+        foreach ($dependencies as $dependency) {
+            if ($dependency->name == $packageName) {
                 return $this->comparator->satisfies($version, $dependency->version);
             }
         }
@@ -180,7 +180,7 @@ class Collector
         // Update package from older to newest version.
         if ($this->observer->hasInstalled($packageName)) {
             // Skip if this is the same version.
-            if($this->observer->getInstalled()[$packageName] === $version) {
+            if ($this->observer->getInstalled()[$packageName] === $version) {
                 return;
             }
 
