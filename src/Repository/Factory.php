@@ -8,6 +8,7 @@ use Mleczek\CBuilder\Repository\Exceptions\HydratePropertyNotFoundException;
 use Mleczek\CBuilder\Repository\Exceptions\UnknownRepositoryTypeException;
 use Mleczek\CBuilder\Repository\Providers\EmptyRepository;
 use Mleczek\CBuilder\Repository\Providers\LocalRepository;
+use Mleczek\CBuilder\Package\Factory as PackageFactory;
 
 class Factory
 {
@@ -22,15 +23,22 @@ class Factory
     private $config;
 
     /**
+     * @var PackageFactory
+     */
+    private $packageFactory;
+
+    /**
      * Factory constructor.
      *
      * @param Container $di
      * @param Config $config
+     * @param PackageFactory $packageFactory
      */
-    public function __construct(Container $di, Config $config)
+    public function __construct(Container $di, Config $config, PackageFactory $packageFactory)
     {
         $this->di = $di;
         $this->config = $config;
+        $this->packageFactory = $packageFactory;
     }
 
     /**
@@ -58,6 +66,19 @@ class Factory
         }
 
         return $collection;
+    }
+
+    /**
+     * Get repositories collection from the
+     * working directory cbuilder.json file.
+     *
+     * @return Collection
+     */
+    public function hydrateCurrent()
+    {
+        $repositories = $this->packageFactory->makeCurrent()->getRepositories();
+
+        return $this->hydrate($repositories);
     }
 
     /**

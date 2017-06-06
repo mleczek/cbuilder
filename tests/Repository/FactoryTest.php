@@ -3,14 +3,15 @@
 namespace Mleczek\CBuilder\Tests\Repository;
 
 use DI\Container;
-use DI\ContainerBuilder;
 use Mleczek\CBuilder\Environment\Config;
+use Mleczek\CBuilder\Package\Package;
 use Mleczek\CBuilder\Repository\Collection;
 use Mleczek\CBuilder\Repository\Exceptions\HydratePropertyNotFoundException;
 use Mleczek\CBuilder\Repository\Exceptions\UnknownRepositoryTypeException;
 use Mleczek\CBuilder\Repository\Factory;
 use Mleczek\CBuilder\Repository\Providers\EmptyRepository;
 use Mleczek\CBuilder\Repository\Providers\LocalRepository;
+use Mleczek\CBuilder\Package\Factory as PackageFactory;
 use Mleczek\CBuilder\Repository\Repository;
 use Mleczek\CBuilder\Tests\TestCase;
 
@@ -21,13 +22,14 @@ class FactoryTest extends TestCase
         $di = $this->createMock(Container::class);
         $config = $this->createMock(Config::class);
         $repository = $this->createMock(LocalRepository::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
 
         $di->expects($this->once())
             ->method('make')
             ->with(LocalRepository::class, ['src' => 'temp/dir'])
             ->willReturn($repository);
 
-        $factory = new Factory($di, $config);
+        $factory = new Factory($di, $config, $packageFactory);
         $this->assertEquals($repository, $factory->makeLocal('temp/dir'));
     }
 
@@ -35,6 +37,7 @@ class FactoryTest extends TestCase
     {
         $di = $this->createMock(Container::class);
         $config = $this->createMock(Config::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
 
         $repository = $this->createMock(LocalRepository::class);
         $di->expects($this->once())
@@ -42,14 +45,37 @@ class FactoryTest extends TestCase
             ->with(EmptyRepository::class)
             ->willReturn($repository);
 
-        $factory = new Factory($di, $config);
+        $factory = new Factory($di, $config, $packageFactory);
         $this->assertEquals($repository, $factory->makeEmpty('temp/dir'));
+    }
+
+    public function testHydrateCurrent()
+    {
+        $di = $this->createMock(Container::class);
+        $config = $this->createMock(Config::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
+
+        $repositories = ['any array value to check correctness'];
+        $package = $this->createMock(Package::class);
+        $package->method('getRepositories')->willReturn($repositories);
+        $packageFactory->method('makeCurrent')->willReturn($package);
+
+        $factory = $this->getMockBuilder(Factory::class)
+            ->setConstructorArgs([$di, $config, $packageFactory])
+            ->setMethods(['hydrate'])->getMock();
+
+        $collection = $this->createMock(Collection::class);
+        $factory->expects($this->once())->method('hydrate')
+            ->with($repositories)->willReturn($collection);
+
+        $this->assertEquals($collection, $factory->hydrateCurrent());
     }
 
     public function testHydrate()
     {
         $di = $this->createMock(Container::class);
         $config = $this->createMock(Config::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
 
         // Repository type exists,
         $config->method('has')
@@ -82,7 +108,7 @@ class FactoryTest extends TestCase
             ->method('add')
             ->withConsecutive([$repoA], [$repoB]);
 
-        $factory = new Factory($di, $config);
+        $factory = new Factory($di, $config, $packageFactory);
         $factory->hydrate([[
             'type' => 'local',
             'src' => 'local/dir',
@@ -96,6 +122,7 @@ class FactoryTest extends TestCase
     {
         $di = $this->createMock(Container::class);
         $config = $this->createMock(Config::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
 
         $config->method('has')
             ->with('repositories.local')
@@ -103,7 +130,7 @@ class FactoryTest extends TestCase
 
         $this->expectException(UnknownRepositoryTypeException::class);
 
-        $factory = new Factory($di, $config);
+        $factory = new Factory($di, $config, $packageFactory);
         $factory->hydrate([[
             'type' => 'local',
             'src' => 'https://localhost',
@@ -114,10 +141,11 @@ class FactoryTest extends TestCase
     {
         $di = $this->createMock(Container::class);
         $config = $this->createMock(Config::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
 
         $this->expectException(HydratePropertyNotFoundException::class);
 
-        $factory = new Factory($di, $config);
+        $factory = new Factory($di, $config, $packageFactory);
         $factory->hydrate([[
             'src' => 'https://localhost',
         ]]);
@@ -127,10 +155,11 @@ class FactoryTest extends TestCase
     {
         $di = $this->createMock(Container::class);
         $config = $this->createMock(Config::class);
+        $packageFactory = $this->createMock(PackageFactory::class);
 
         $this->expectException(HydratePropertyNotFoundException::class);
 
-        $factory = new Factory($di, $config);
+        $factory = new Factory($di, $config, $packageFactory);
         $factory->hydrate([[
             'type' => 'local',
         ]]);
